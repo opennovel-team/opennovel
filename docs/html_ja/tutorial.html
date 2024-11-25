@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>OpenNovel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1 id="opennovel">OpenNovel チュートリアル</h1>
+<p>このチュートリアルでは、OpenNovelを使ってゲームを作成する方法を説明します。
+内容はとてもかんたんで、1時間もあれば取り組めます。</p>
+<h2 id="">セットアップ編</h2>
+<p>ここではWindowsを使います。最新のファイルをダウンロードして展開しておきます。</p>
+<h2 id="-1">ゲームフォルダを確認する</h2>
+<p>ゲームフォルダを開いてみます。
+それぞれのフォルダがゲームの中身です。ファイルの振り分けは下記のようになっています。</p>
+<table>
+<thead>
+<tr>
+<th>名前</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>txt</td>
+<td>シナリオファイル</td>
+</tr>
+<tr>
+<td>bg</td>
+<td>背景の画像ファイル</td>
+</tr>
+<tr>
+<td>ch</td>
+<td>キャラの画像ファイル</td>
+</tr>
+<tr>
+<td>rule</td>
+<td>ユニバーサルトランジションのルール画像ファイル</td>
+</tr>
+<tr>
+<td>cg</td>
+<td>その他の画像ファイル</td>
+</tr>
+<tr>
+<td>bgm</td>
+<td>BGMの音声ファイル</td>
+</tr>
+<tr>
+<td>se</td>
+<td>効果音の音声ファイル</td>
+</tr>
+<tr>
+<td>cv</td>
+<td>ボイスの音声ファイル</td>
+</tr>
+<tr>
+<td>anime</td>
+<td>アニメのスクリプトファイル</td>
+</tr>
+<tr>
+<td>gui</td>
+<td>GUIのスクリプトファイル</td>
+</tr>
+<tr>
+<td>font</td>
+<td>フォントファイル</td>
+</tr>
+<tr>
+<td>wms</td>
+<td>WMSのスクリプトファイル</td>
+</tr>
+<tr>
+<td>mov</td>
+<td>動画ファイル</td>
+</tr>
+<tr>
+<td>project.txt</td>
+<td>設定ファイル</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-2">背景を表示する方法</h2>
+<p>最初に実行されるシナリオファイルは <code>txt</code> フォルダの <code>init.txt</code> というファイルです。
+ここで一度、テキストの中身をすべて削除して、次の内容を貼り付けて保存し、実行してみてください。</p>
+<pre><code>@bg roof.png 1.0
+</code></pre>
+<p>屋上の背景が表示されるはずです。</p>
+<ul>
+<li><code>@bg</code> というのが背景を表示する命令です。</li>
+<li><code>roof.png</code> は <code>bg</code> フォルダの中のファイル名です。</li>
+<li><code>1.0</code> は画面の表示が完了するまでの時間(秒)です。</li>
+</ul>
+<h2 id="-3">キャラを表示する方法</h2>
+<p>背景を表示できたところで、次はキャラクタの表示に移ります。
+<code>init.txt</code> の中身をすべて削除して、次の内容を貼り付け、実行します。</p>
+<pre><code>@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+</code></pre>
+<p>屋上の背景が表示され、続いてキャラクタが表示され、クリックを行うと、終了するはずです。</p>
+<ul>
+<li><code>@ch</code> というのがキャラクタを表示するコマンドです。</li>
+<li><code>center</code> は表示位置(中央)です。</li>
+<li><code>midori/normal.png</code> は <code>ch</code> フォルダの中のファイル名です。</li>
+<li><code>1.0</code> はフェードインの時間(秒)です。</li>
+</ul>
+<h2 id="-4">メッセージとセリフを表示する方法</h2>
+<p>背景、キャラクタを表示できたところで、次はメッセージとセリフの表示に移ります。
+<code>init.txt</code> の中身をすべて削除し、次の内容を貼り付け、実行してみてください。</p>
+<pre><code>@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+
+メッセージボックスにテキストを表示するのが"メッセージ"です。
+
+なまえ「キャラクタの名前を付けたメッセージが"セリフ"です。」
+
+*なまえ*001.ogg*セリフにはボイスをつけることができます。
+</code></pre>
+<p>先ほどのキャラクタが表示されたあと、メッセージとセリフが表示されるはずです。</p>
+<ul>
+<li>名前付きのセリフとして認識される行は、先頭が <code>*</code> で始まる行か、<code>名前「メッセージ」</code>の形式の行です。</li>
+<li>名前の付かないメッセージとして認識される行は、普通の文章の行(先頭が <code>@</code> や <code>*</code> や <code>:</code> ではない行)です。</li>
+</ul>
+<h2 id="-5">音楽を再生する方法</h2>
+<p>メッセージ、セリフを表示できたところで、次はBGMの再生に移ります。
+<code>init.txt</code> の中身をすべて削除して、次の内容を貼り付け、実行してみてください。</p>
+<pre><code>@bgm 01.ogg
+@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+</code></pre>
+<p>BGMが再生され、先ほどのキャラクタが表示されるはずです。</p>
+<ul>
+<li><code>@bgm</code> はBGM再生コマンドを表します。</li>
+<li><code>01.ogg</code> は <code>bgm</code> フォルダのファイル名を表します。</li>
+</ul>
+<p>再生できるファイルは、44.1kHzのOgg Vorbis形式です。ステレオ、モノラルのどちらでも構いません。</p>
+<h2 id="-6">選択肢を表示する方法</h2>
+<p>BGMの再生ができたところで、次は選択肢の表示に移ります。
+<code>init.txt</code> の中身をすべて削除して、次の内容を貼り付け、実行してみてください。</p>
+<pre><code>@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+さて、学校へ行くか。
+@choose WALK 歩いて行こう BIKE 自転車で行こう
+:WALK
+歩いて行くことにした。
+@goto end
+:BIKE
+自転車で行くことにした。
+@goto end
+:end
+</code></pre>
+<p>コピペしたら、ゲームを実行します。2つの選択肢が表示されるはずです。
+<code>@choose</code> は選択肢命令を表し、<code>WALK</code>, <code>BIKE</code> は選択肢が選ばれたときにジャンプする先のラベルです(後述)。
+ラベル名と選択肢のテキストが一組のセットです。
+<code>:WALK</code> は、ジャンプ先として指定されるラベルです。
+ラベルの行は、ゲームの見た目の上では何も実行されません。</p>
+<h2 id="-7">より便利な書き方</h2>
+<p>別な書き方として、次のようなスタイルもあります。
+この場合、ラベルは省略できます。
+お好みの方法を使ってください。</p>
+<pre><code>@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+
+さて、学校へ行くか。
+
+&lt;&lt;&lt;
+switch "歩いて行こう" "自転車で行こう" {
+case "歩いて行こう":
+    歩いて行くことにした。
+    break
+case "自転車で行こう":
+    自転車で行くことにした。
+    break
+}
+&gt;&gt;&gt;
+</code></pre>
+<h2 id="-8">シナリオを分岐させる方法</h2>
+<p>選択肢の表示ができたところで、次はフラグを立てて分岐する処理に移ります。
+これができればゲームがひとまず形になります。
+<code>init.txt</code> の中身をすべて削除して、次の内容を貼り付け、実行してみてください。</p>
+<pre><code>@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+
+さて、学校へ行くか。
+
+&lt;&lt;&lt;
+switch "歩いて行こう" "自転車で行こう" {
+case "歩いて行こう":
+    歩いて行くことにした。
+    @set $1 = true
+    break
+case "自転車で行こう":
+    自転車で行くことにした。
+   break
+}
+&gt;&gt;&gt;
+
+@if $1 == false NO_MONEY
+
+お金を拾った。
+
+:NO_MONEY
+</code></pre>
+<p>保存したら、ゲームを実行します。
+「歩いて行こう」を選択した場合だけ、「お金を拾った。」が表示されるはずです。</p>
+<h2 id="-9">分岐の仕組み</h2>
+<p>ここでは <code>@set</code> と <code>@if</code> を組み合わせています。</p>
+<p>まず <code>@set</code> について説明します。</p>
+<ul>
+<li><code>@set</code> は、フラフを立てるコマンドです。</li>
+<li>続く <code>$1</code> は、変数番号 <code>1</code> に値 <code>true</code> をセットすることを意味します。</li>
+<li>続く <code>=</code> は、単純な代入であることを意味します。(他にも計算ができます)</li>
+<li><code>true</code> は、整数の <code>1</code> を代入することを意味します。</li>
+<li>変数の初期値は <code>0</code>、つまり <code>false</code> ですので、「歩いて行こう」が選択されたときだけ、変数 <code>$1</code> の値が <code>true</code> になります。</li>
+</ul>
+<p>次に <code>@if</code> について説明します。</p>
+<ul>
+<li><code>@if</code> は、条件分岐です。</li>
+<li><code>$1 == false</code> は、変数 <code>$1</code> の値が <code>false</code>、つまり <code>0</code> の場合、という条件を意味します。</li>
+<li><code>NO_MONEY</code> は、ラベルの名前です。条件に一致したとき、<code>:NO_MONEY</code> という行にジャンプします。</li>
+<li>変数の初期値は <code>0</code>、つまり <code>false</code> ですので、結果として、「歩いて行こう」を選択した場合だけ、「お金を拾った。」が表示されることになります。</li>
+</ul>
+<p>変数の使い方は0/1やfalse/trueのフラグだけではなく、好感度などの数値を持つこともできます。
+詳細はコマンド・リファレンスの @set と @if をご覧ください。
+ただ、スクリプトをシンプルに保つためには、なるべく0/1のフラグとして運用する方が望ましいと思います。</p>
+<h2 id="-10">より便利な書き方</h2>
+<p>ちなみに、<code>@if</code> を便利にした書き方もあります。拡張if文と呼ばれています。
+ラベルやジャンプがよくわからないときは、この書き方を使ってみてください。</p>
+<pre><code>&lt;&lt;&lt;
+if $1 == 0 {
+  お金を拾った。
+}
+&gt;&gt;&gt;
+</code></pre>
+<p>この書き方では、<code>&lt;&lt;&lt;</code> から <code>&gt;&gt;&gt;</code> までの区間で拡張構文が有効になります。
+途中で <code>&lt;&lt;&lt;</code> が再び現れても、それはただのメッセージとして表示されてしまいますのでご注意ください。</p>
+<h2 id="-11">メニュー画面を表示させる方法</h2>
+<p>シナリオの分岐ができたところで、 ちょっとステップアップして、 タイトル画面やメニュー画面の作成方法を説明します。
+<code>init.txt</code> の中身をすべて削除して、次の内容を貼り付け、実行してみてください。</p>
+<pre><code>@gui title.txt
+:START
+:LOAD
+:CONFIG
+:QUIT
+</code></pre>
+<p>ゲームを実行すると、タイトル画面が表示されるはずです。
+詳しく見ていきます。</p>
+<p><code>@gui title.txt</code> というコマンドは、メニュー画面(GUIと呼ばれる)を表示するコマンドです。
+これは <code>gui</code> フォルダの <code>title.txt</code> というファイルで設定されているメニュー画面を表示しています。
+<code>title.txt</code> はGUIファイルと呼ばれています。</p>
+<p>メニューファイルの書き方については、<a href="gui.html">GUI</a> を参照 してください。
+何やら難しそうと思われるかもしれませんが、画像編集ソフトのレイヤーを理解していれば、とても簡単に使えます。</p>
+<h2 id="-12">シナリオファイルを分割する方法</h2>
+<p>シナリオの分量が大きくなってくると、1つのシナリオファイルで書くのが大変になります。
+そこで、シナリオの章やシーンごとにシナリオファイルを分割する方法があります。
+<code>txt</code> フォルダの中に、<code>init.txt</code> のコピーを作成して、<code>second.txt</code> と名付けてください。</p>
+<p>次の内容を貼り付け、保存してみてください。</p>
+<ul>
+<li>init.txt:</li>
+</ul>
+<pre><code>@bg roof.png 1.0
+@ch center midori/normal.png 1.0
+
+init.txtの中にいます。
+
+@load second.txt
+</code></pre>
+<ul>
+<li>second.txt:</li>
+</ul>
+<pre><code>second.txtに移動しました。
+</code></pre>
+<p>保存したら、ゲームを実行してみてください。
+<code>second.txt</code> に移動できたことがわかるはずです。</p>
+<h2 id="-13">以上です</h2>
+<p>基本的にはたったこれだけです！</p>
+<p>ここで触れなかった内容には下記があります。</p>
+<ul>
+<li>設定ファイル <code>project.txt</code></li>
+<li><a href="gui.html">GUI</a></li>
+<li><a href="anime.html">アニメ</a></li>
+</ul>
+<p>設定ファイルは見ればわかる内容ですので安心してください。
+GUIとアニメはリンク先を読んでみてください。</p></body>
+</html>

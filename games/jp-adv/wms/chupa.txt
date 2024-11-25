@@ -1,0 +1,11 @@
+// チュパ音再生機能
+//
+// ■使い方
+// @wms chupa.txt chupaon.ogg
+//
+// ■効果
+// 使った後の最初の音声付きセリフの後、チュパ音が再生される
+//
+func main(file) {
+    s2_register_bgvoice(file);
+}

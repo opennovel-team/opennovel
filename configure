@@ -1,0 +1,326 @@
+#!/bin/sh
+
+# Defaults
+PREFIX="/usr/local"
+HOST=""
+
+# Parse options.
+for OPT in "${@}"; do
+    case "$OPT" in
+        -h | --help)
+            echo '  --prefix=[/usr/local]'
+            echo '  --host=[windows|linux|freebsd|netbsd|openbsd|solaris|posix]'
+            exit 0
+            ;;
+        --prefix=*)
+            PREFIX=${1#--prefix=}
+            sed -e "s|^DESTDIR=.*$|DESTDIR=$PREFIX|g" Makefile > Makefile.new
+            mv Makefile.new Makefile
+            ;;
+        --host=windows)
+            HOST=windows
+            ;;
+    esac
+done
+
+# Detect a target if not specified.
+if [ -z "$HOST" ]; then
+    case "`uname -s`" in
+        MINGW*)
+            HOST=windows
+            ;;
+        Linux)
+            HOST=linux
+            ;;
+        FreeBSD)
+            HOST=freebsd
+            ;;
+        NetNSD)
+            HOST=netbsd
+            ;;
+        OpenBSD)
+            HOST=openbsd
+            ;;
+        SunOS)
+            HOST=solaris
+            ;;
+        AIX)
+            HOST=posix
+            ;;
+        HP-UX)
+            HOST=posix
+            ;;
+        *)
+            HOST=posix
+            ;;
+    esac
+fi
+
+# For Windows.
+if [ "$HOST" = "windows" ]; then
+    echo 'Configuring for Windows...'
+    set -eu
+    case "`uname -s`" in
+        MINGW*)
+            echo 'Searching for host compiler toolchain...'
+            echo -n '  gcc     ... ' && if [ ! -f "`which gcc`"     ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  g++     ... ' && if [ ! -f "`which g++`"     ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  ar      ... ' && if [ ! -f "`which ar`"      ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  strip   ... ' && if [ ! -f "`which strip`"   ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  windres ... ' && if [ ! -f "`which windres`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo ''
+            CC=gcc
+            CXX=g++
+            AR=ar
+            STRIP=strip
+            WINDRES=windres
+            ;;
+        *)
+            echo 'Searching for cross compiler toolchain...'
+            echo -n '  i686-w64-mingw32-gcc     ... ' && if [ ! -f "`which i686-w64-mingw32-gcc`"     ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  i686-w64-mingw32-g++     ... ' && if [ ! -f "`which i686-w64-mingw32-g++`"     ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  i686-w64-mingw32-ar      ... ' && if [ ! -f "`which i686-w64-mingw32-ar`"      ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  i686-w64-mingw32-strip   ... ' && if [ ! -f "`which i686-w64-mingw32-strip`"   ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo -n '  i686-w64-mingw32-windres ... ' && if [ ! -f "`which i686-w64-mingw32-windres`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+            echo ''
+            CC=i686-w64-mingw32-gcc
+            CXX=i686-w64-mingw32-g++
+            AR=i686-w64-mingw32-ar
+            STRIP=i686-w64-mingw32-strip
+            WINDRES=i686-w64-mingw32-windres
+            ;;
+    esac
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-windows|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=engine.exe|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=pack.exe|g" \
+        -e "s|^CC=.*$|CC=$CC|g" \
+        -e "s|^CXX=.*$|CXX=$CXX|g" \
+        -e "s|^AR=.*$|AR=$AR|g" \
+        -e "s|^STRIP=.*$|STRIP=$STRIP|g" \
+        -e "s|^WINDRES=.*$|WINDRES=$WINDRES|g" \
+        -i Makefile
+    echo 'Configured for Windows. Run make.'
+    echo ''
+    exit 0
+fi
+
+# For Linux.
+if [ -n "`uname -a | grep Linux`" ]; then
+    set -eu
+    echo 'Configuring for Linux...'
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-linux|g" -i Makefile
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-linux|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=onengine|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=onpack|g" \
+        -e "s|^CC=.*$|CC=cc|g" \
+        -e "s|^CXX=.*$|CXX=c++|g" \
+        -e "s|^AR=.*$|AR=ar|g" \
+        -e "s|^STRIP=.*$|STRIP=strip|g" \
+        -e "s|^WINDRES=.*$|WINDRES=windres|g" \
+        -i Makefile
+    echo ''
+    echo 'Searching for toolchain...'
+    echo -n '  cc ... ' && if [ ! -f "`which cc`"  ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo -n '  ar ... ' && if [ ! -f "`which ar`"  ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo ''
+    echo 'Searching for dependencies...'
+    echo -n '  libpng    ... ' && pkg-config --cflags --libs libpng                            > /dev/null && echo 'ok'
+    echo -n '  libjpeg   ... ' && pkg-config --cflags --libs libjpeg                           > /dev/null && echo 'ok'
+    echo -n '  libwebp   ... ' && pkg-config --cflags --libs libwebp                           > /dev/null && echo 'ok'
+    echo -n '  libogg    ... ' && pkg-config --cflags --libs ogg                               > /dev/null && echo 'ok'
+    echo -n '  libvorbis ... ' && pkg-config --cflags --libs vorbis vorbisfile                 > /dev/null && echo 'ok'
+    echo -n '  freetype2 ... ' && pkg-config --cflags --libs freetype2                         > /dev/null && echo 'ok'
+    echo -n '  Xpm       ... ' && pkg-config --cflags --libs xpm                               > /dev/null && echo 'ok'
+    echo -n '  ALSA      ... ' && pkg-config --cflags --libs alsa                              > /dev/null && echo 'ok'
+    echo -n '  gstreamer ... ' && pkg-config --cflags --libs gstreamer-1.0 gstreamer-video-1.0 > /dev/null && echo 'ok'
+    echo -n '  zlib      ... ' && pkg-config --cflags --libs zlib                              > /dev/null && echo 'ok'
+    echo -n '  brotli    ... ' && pkg-config --cflags --libs libbrotlidec libbrotlicommon      > /dev/null && echo 'ok'
+    echo ''
+    echo 'Configured for Linux. Run make.'
+    echo ''
+    exit 0
+fi
+
+# For FreeBSD.
+if [ -n "`uname -a | grep FreeBSD`" ]; then
+    set -eu
+    echo 'Configuring for FreeBSD...'
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-freebsd|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=onengine|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=onpack|g" \
+        -e "s|^CC=.*$|CC=cc|g" \
+        -e "s|^CXX=.*$|CXX=c++|g" \
+        -e "s|^AR=.*$|AR=ar|g" \
+        -e "s|^STRIP=.*$|STRIP=strip|g" \
+        -e "s|^WINDRES=.*$|WINDRES=windres|g" \
+        < Makefile > Makefile.new
+	mv Makefile.new Makefile
+    echo ''
+    echo 'Searching for toolchain...'
+    echo -n '  cc ... ' && if [ ! -f "`which cc`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo -n '  ar ... ' && if [ ! -f "`which ar`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo ''
+    echo 'Searching for dependencies...'
+    echo -n '  libpng    ... ' && pkg-config --cflags --libs libpng                            > /dev/null && echo 'ok'
+    echo -n '  libjpeg   ... ' && pkg-config --cflags --libs libjpeg                           > /dev/null && echo 'ok'
+    echo -n '  libwebp   ... ' && pkg-config --cflags --libs libwebp                           > /dev/null && echo 'ok'
+    echo -n '  libogg    ... ' && pkg-config --cflags --libs ogg                               > /dev/null && echo 'ok'
+    echo -n '  libvorbis ... ' && pkg-config --cflags --libs vorbis vorbisfile                 > /dev/null && echo 'ok'
+    echo -n '  freetype2 ... ' && pkg-config --cflags --libs freetype2                         > /dev/null && echo 'ok'
+    echo -n '  Xpm       ... ' && pkg-config --cflags --libs xpm                               > /dev/null && echo 'ok'
+    echo -n '  ALSA      ... ' && pkg-config --cflags --libs alsa                              > /dev/null && echo 'ok'
+    echo -n '  gstreamer ... ' && pkg-config --cflags --libs gstreamer-1.0 gstreamer-video-1.0 > /dev/null && echo 'ok'
+    echo -n '  zlib      ... ' && pkg-config --cflags --libs zlib                              > /dev/null && echo 'ok'
+    echo -n '  brotli    ... ' && pkg-config --cflags --libs libbrotlidec libbrotlicommon      > /dev/null && echo 'ok'
+    echo ''
+    echo 'Configured for FreeBSD. Run make.'
+    echo ''
+    exit 0
+fi
+
+# For NetBSD.
+if [ -n "`uname -a | grep NetBSD`" ]; then
+    set -eu
+    echo 'Configuring for NetBSD...'
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-netbsd|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=onengine|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=onpack|g" \
+        -e "s|^CC=.*$|CC=cc|g" \
+        -e "s|^CXX=.*$|CXX=c++|g" \
+        -e "s|^AR=.*$|AR=ar|g" \
+        -e "s|^STRIP=.*$|STRIP=strip|g" \
+        -e "s|^WINDRES=.*$|WINDRES=windres|g" \
+        < Makefile > Makefile.new
+	mv Makefile.new Makefile
+    echo ''
+    echo 'Searching for toolchain...'
+    echo -n '  cc ... ' && if [ ! -f "`which cc`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo -n '  ar ... ' && if [ ! -f "`which ar`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo ''
+    echo 'Searching for dependencies...'
+    echo -n '  libpng    ... ' && pkg-config --cflags --libs libpng                            > /dev/null && echo 'ok'
+    echo -n '  libjpeg   ... ' && pkg-config --cflags --libs libjpeg                           > /dev/null && echo 'ok'
+    echo -n '  libwebp   ... ' && pkg-config --cflags --libs libwebp                           > /dev/null && echo 'ok'
+    echo -n '  libogg    ... ' && pkg-config --cflags --libs ogg                               > /dev/null && echo 'ok'
+    echo -n '  libvorbis ... ' && pkg-config --cflags --libs vorbis vorbisfile                 > /dev/null && echo 'ok'
+    echo -n '  freetype2 ... ' && pkg-config --cflags --libs freetype2                         > /dev/null && echo 'ok'
+    echo -n '  Xpm       ... ' && pkg-config --cflags --libs xpm                               > /dev/null && echo 'ok'
+    echo -n '  ALSA      ... ' && pkg-config --cflags --libs alsa                              > /dev/null && echo 'ok'
+    echo -n '  zlib      ... ' && pkg-config --cflags --libs zlib                              > /dev/null && echo 'ok'
+    echo -n '  brotli    ... ' && pkg-config --cflags --libs libbrotlidec libbrotlicommon      > /dev/null && echo 'ok'
+    echo ''
+    echo 'Configured for NetBSD. Run make.'
+    echo ''
+    exit 0
+fi
+
+# For OpenBSD.
+if [ -n "`uname -a | grep OpenBSD`" ]; then
+    set -eu
+    echo 'Configuring for OpenBSD...'
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-openbsd|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=onengine|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=onpack|g" \
+        -e "s|^CC=.*$|CC=cc|g" \
+        -e "s|^CXX=.*$|CXX=c++|g" \
+        -e "s|^AR=.*$|AR=ar|g" \
+        -e "s|^STRIP=.*$|STRIP=strip|g" \
+        -e "s|^WINDRES=.*$|WINDRES=windres|g" \
+        < Makefile > Makefile.new
+	mv Makefile.new Makefile
+    echo ''
+    echo 'Searching for toolchain...'
+    echo -n '  cc ... ' && if [ ! -f "`which cc`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo -n '  ar ... ' && if [ ! -f "`which ar`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo ''
+    echo 'Searching for dependencies...'
+    echo -n '  libpng    ... ' && pkg-config --cflags --libs libpng                            > /dev/null && echo 'ok'
+    echo -n '  libjpeg   ... ' && pkg-config --cflags --libs libjpeg                           > /dev/null && echo 'ok'
+    echo -n '  libwebp   ... ' && pkg-config --cflags --libs libwebp                           > /dev/null && echo 'ok'
+    echo -n '  libogg    ... ' && pkg-config --cflags --libs ogg                               > /dev/null && echo 'ok'
+    echo -n '  libvorbis ... ' && pkg-config --cflags --libs vorbis vorbisfile                 > /dev/null && echo 'ok'
+    echo -n '  freetype2 ... ' && pkg-config --cflags --libs freetype2                         > /dev/null && echo 'ok'
+    echo -n '  Xpm       ... ' && pkg-config --cflags --libs xpm                               > /dev/null && echo 'ok'
+    echo -n '  ALSA      ... ' && pkg-config --cflags --libs alsa                              > /dev/null && echo 'ok'
+    echo -n '  zlib      ... ' && pkg-config --cflags --libs zlib                              > /dev/null && echo 'ok'
+    echo -n '  brotli    ... ' && pkg-config --cflags --libs libbrotlidec libbrotlicommon      > /dev/null && echo 'ok'
+    echo ''
+    echo 'Configured for OpenBSD. Run make.'
+    echo ''
+    exit 0
+fi
+
+# For Solaris.
+if [ -n "`uname -a | grep SunOS`" ]; then
+    set -eu
+    echo 'Configuring for Solaris...'
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-solaris|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=onengine|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=onpack|g" \
+        -e "s|^CC=.*$|CC=cc|g" \
+        -e "s|^CXX=.*$|CXX=c++|g" \
+        -e "s|^AR=.*$|AR=ar|g" \
+        -e "s|^STRIP=.*$|STRIP=strip|g" \
+        -e "s|^WINDRES=.*$|WINDRES=windres|g" \
+        < Makefile > Makefile.new
+	mv Makefile.new Makefile
+    echo ''
+    echo 'Searching for toolchain...'
+    echo -n '  cc ... ' && if [ ! -f "`which cc`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo -n '  ar ... ' && if [ ! -f "`which ar`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo ''
+    echo 'Searching for dependencies...'
+    echo -n '  libpng    ... ' && pkg-config --cflags --libs libpng                            > /dev/null && echo 'ok'
+    echo -n '  libjpeg   ... ' && pkg-config --cflags --libs libjpeg                           > /dev/null && echo 'ok'
+    echo -n '  libwebp   ... ' && pkg-config --cflags --libs libwebp                           > /dev/null && echo 'ok'
+    echo -n '  libogg    ... ' && pkg-config --cflags --libs ogg                               > /dev/null && echo 'ok'
+    echo -n '  libvorbis ... ' && pkg-config --cflags --libs vorbis vorbisfile                 > /dev/null && echo 'ok'
+    echo -n '  freetype2 ... ' && pkg-config --cflags --libs freetype2                         > /dev/null && echo 'ok'
+    echo -n '  Xpm       ... ' && pkg-config --cflags --libs xpm                               > /dev/null && echo 'ok'
+    echo -n '  ALSA      ... ' && pkg-config --cflags --libs alsa                              > /dev/null && echo 'ok'
+    echo -n '  zlib      ... ' && pkg-config --cflags --libs zlib                              > /dev/null && echo 'ok'
+    echo -n '  brotli    ... ' && pkg-config --cflags --libs libbrotlidec libbrotlicommon      > /dev/null && echo 'ok'
+    echo ''
+    echo 'Configured for Solaris. Run make.'
+    echo ''
+    exit 0
+fi
+
+# For Generic POSIX.
+if [ "$HOST" = "posix" ]; then
+    set -eu
+    echo "Configuring for generic POSIX..."
+    sed -e "s|^BUILDDIR=.*$|BUILDDIR=apps/engine-posix|g" \
+        -e "s|^TARGET_ENGINE=.*$|TARGET_ENGINE=onengine|g" \
+        -e "s|^TARGET_PACK=.*$|TARGET_PACK=onpack|g" \
+        -e "s|^CC=.*$|CC=cc|g" \
+        -e "s|^CXX=.*$|CXX=c++|g" \
+        -e "s|^AR=.*$|AR=ar|g" \
+        -e "s|^STRIP=.*$|STRIP=strip|g" \
+        -e "s|^WINDRES=.*$|WINDRES=windres|g" \
+        < Makefile > Makefile.new
+    mv Makefile.new Makefile
+    echo ''
+    echo 'Searching for toolchain...'
+    echo -n '  cc ... ' && if [ ! -f "`which cc`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo -n '  ar ... ' && if [ ! -f "`which ar`" ]; then echo 'not found'; exit 1; fi && echo 'ok'
+    echo ''
+    echo 'Searching for dependencies...'
+    echo -n '  libpng    ... ' && pkg-config --cflags --libs libpng                            > /dev/null && echo ' ok'
+    echo -n '  libjpeg   ... ' && pkg-config --cflags --libs libjpeg                           > /dev/null && echo ' ok'
+    echo -n '  libwebp   ... ' && pkg-config --cflags --libs libwebp                           > /dev/null && echo ' ok'
+    echo -n '  libogg    ... ' && pkg-config --cflags --libs ogg                               > /dev/null && echo ' ok'
+    echo -n '  libvorbis ... ' && pkg-config --cflags --libs vorbis vorbisfile                 > /dev/null && echo ' ok'
+    echo -n '  freetype2 ... ' && pkg-config --cflags --libs freetype2                         > /dev/null && echo ' ok'
+    echo -n '  Xpm       ... ' && pkg-config --cflags --libs xpm                               > /dev/null && echo ' ok'
+    echo -n '  zlib      ... ' && pkg-config --cflags --libs zlib                              > /dev/null && echo ' ok'
+    echo -n '  bzip2     ... ' && pkg-config --cflags --libs bzip2                             > /dev/null && echo ' ok'
+    echo -n '  brotli    ... ' && pkg-config --cflags --libs libbrotlidec libbrotlicommon      > /dev/null && echo ' ok'
+    echo ''
+    echo "Configured for `uname -s`. Run make."
+    echo ''
+    exit 0
+fi
+
+echo 'Host not detected.'
+exit 1

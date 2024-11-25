@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>OpenNovel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1 id="">フォント</h1>
+<p>OpenNovel では、設定ファイルの <code>project.txt</code> でフォントを4つまで設定できます。</p>
+<h2 id="-1">フォントの種類</h2>
+<table>
+<thead>
+<tr>
+<th>フォントの種類</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>フォント1</td>
+<td>プレイヤーが設定画面で切り替えできるデフォルトのフォント</td>
+</tr>
+<tr>
+<td>フォント2</td>
+<td>固定のフォント</td>
+</tr>
+<tr>
+<td>フォント3</td>
+<td>固定のフォント</td>
+</tr>
+<tr>
+<td>フォント4</td>
+<td>固定のフォント</td>
+</tr>
+</tbody>
+</table>
+<p>フォント1のみ、コンフィグ画面からプレイヤーが変更できます。</p>
+<h2 id="-2">シナリオファイル中でのフォント選択</h2>
+<p>シナリオファイル中では、下記のようにコンフィグを変更してフォントを選択できます。</p>
+<pre><code># フォント1を選択
+@config msgbox.font 1
+
+# フォント2を選択
+@config msgbox.font 2
+
+# フォント3を選択
+@config msgbox.font 3
+
+# フォント4を選択
+@config msgbox.font 4
+</code></pre>
+<p>また、メッセージの中で一時的に変更も可能です。</p>
+<pre><code>メッセージ中では、\f{1}でフォント1を選択できます。
+メッセージ中では、\f{2}でフォント2を選択できます。
+メッセージ中では、\f{3}でフォント3を選択できます。
+メッセージ中では、\f{4}でフォント4を選択できます。
+</code></pre>
+<p>フォント1の選択はセーブデータに残るため、フォント1のファイル名が変更になった場合には、エラーが表示されます。
+この場合、セーブデータを削除して再起動すれば解決します。</p></body>
+</html>

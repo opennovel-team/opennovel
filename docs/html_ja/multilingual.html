@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>OpenNovel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1 id="">多言語対応</h1>
+<h2 id="-1">コンフィグ</h2>
+<p>OpenNovel では、<code>game.locale</code> というコンフィグで言語を指定して、言語ごとに文章を変更できます。
+<code>game.locale</code> がコンフィグで指定されていない場合、システムの言語設定が使用されます。</p>
+<p>指定できる言語は次の通りです。</p>
+<table>
+<thead>
+<tr>
+<th>言語指定</th>
+<th>言語</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ja</td>
+<td>日本語</td>
+</tr>
+<tr>
+<td>en</td>
+<td>英語</td>
+</tr>
+<tr>
+<td>fr</td>
+<td>フランス語</td>
+</tr>
+<tr>
+<td>it</td>
+<td>イタリア語</td>
+</tr>
+<tr>
+<td>es</td>
+<td>スペイン語</td>
+</tr>
+<tr>
+<td>de</td>
+<td>ドイツ語</td>
+</tr>
+<tr>
+<td>el</td>
+<td>ギリシャ語</td>
+</tr>
+<tr>
+<td>ru</td>
+<td>ロシア語</td>
+</tr>
+<tr>
+<td>zh</td>
+<td>中国語(簡体字)</td>
+</tr>
+<tr>
+<td>tw</td>
+<td>中国語(繁体字)</td>
+</tr>
+<tr>
+<td>other</td>
+<td>その他</td>
+</tr>
+</tbody>
+</table>
+<p>言語指定を行った場合、Windows版では終了確認のダイアログも翻訳されます。</p>
+<h2 id="-2">シナリオファイルでの書き分</h2>
+<p>シナリオファイルでは、下記のように言語を書き分けることができます。</p>
+<pre><code>+en+This is an English message.
++ja+日本語のメッセージです。
+</code></pre>
+<p>上の記述は、<code>game.local</code> が <code>en</code> なら1行目のメッセージを表示し、<code>ja</code> なら2行目のメッセージを表示するという意味です。</p>
+<p>セリフの場合は下記のように記述します。</p>
+<pre><code>+en+*Hina*This is an English message.
++ja+*ひな*日本語のメッセージです。
+</code></pre>
+<p><code>+言語+</code> の記述は、メッセージやコマンドの直前、行頭に書きます。
+<code>game.locale</code> が指定の言語と一致する場合だけ実行するという意味のプレフィックスです。</p>
+<h2 id="-3">ゲーム中での変更</h2>
+<p>ゲーム中で言語選択の画面を作成する場合は、シナリオファイルの中で <code>@config locale.force en</code> のようにします。</p></body>
+</html>

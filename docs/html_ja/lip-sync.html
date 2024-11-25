@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>OpenNovel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1 id="">口パク</h1>
+<h2 id="-1">口パク機能</h2>
+<p>OpenNovel には、セリフ表示中にキャラの口をアニメで動かす「口パク」機能があります。</p>
+<h2 id="-2">口パク画像ファイル</h2>
+<p>口パクの画像ファイルは、キャラクタ本体画像と同じフォルダの中に、<code>lip</code> というフォルダを作って格納します。</p>
+<ul>
+<li>happy.png (本体ファイル)</li>
+<li>lip/<ul>
+<li>happy.png (口パクファイル)</li></ul></li>
+</ul>
+<p>口パクの画像ファイルは、口パクのフレーム数の分だけ、キャラの差分画像を横につなげたものです。
+1フレームの幅と高さは、本体ファイルの幅と同じにします。
+よって、口パクの画像ファイルの幅は、本体画像の幅 × フレーム数 となります。</p>
+<p>差分の境界の透明度は、なめらかにする必要があります。
+画像編集ツールで、選択範囲のぼかしと削除を利用してください。</p>
+<h2 id="-3">コンフィグ</h2>
+<p>口パクの間隔は、<code>project.txt</code> の下記の箇所で変更できます。</p>
+<pre><code>#
+# 口パクの1フレームの秒数
+#
+character.lipsync.frame=0.3
+
+#
+# 口パクを何文字ごとに行うか
+#
+character.lipsync.chars=3
+</code></pre>
+<h2 id="-4">音声シンクロ</h2>
+<p>今のところ、口パクは文字にシンクロしますが、音声にはシンクロしません。
+音声にシンクロするリップシンク技術には特許があり、うかつに利用できないためです。
+将来的には特許を避ける形で実装できたらと思います。</p></body>
+</html>

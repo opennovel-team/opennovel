@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Game</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1, initial-scale=1">
+  <style>
+    html, body {
+        padding 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        position: fixed;
+    }
+    .emscripten {
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+    div.emscripten {
+        text-align: center;
+        color: white;
+    }
+    div.emscripten_border {
+        border: 0px;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    canvas.emscripten {
+        border: 0px none;
+        background-color: black;
+        max-width: 100vw;
+        max-height: 100vh;
+        width: 0px;
+        height: 0px;
+        object-fit: contain;
+        display: table-cell;
+        vertical-align: middle;
+        outline: none;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    }
+    .loader {
+        position: absolute;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+        width: 512px;
+        height: 64px;
+    }
+    .loader div {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        box-sizing: border-box;
+        opacity: .8;
+    }
+  </style>
+</head>
+<body style="padding: 0; margin: 0;">
+
+  <!-- Loader Anime -->
+  <div class="loader" id="loader">
+    <button id="btnOpenLocalProject" class="topButton">ゲームフォルダを開く
+	</button>
+  </div>
+
+  <!-- Main Screen -->
+  <div class="emscripten_border" id="canvas_holder">
+    <video id="video" style="width: 100%; display: none;"></video>  
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  </div>
+
+  <!-- Utility Script -->
+  <script type='text/javascript'>
+    // For emscripten.
+    var Module = {
+        preRun: [],
+        postRun: [],
+        print: function(text) {
+            console.log(text);
+        },
+        printErr: function(text) {
+            console.error(text);
+        },
+        canvas: (function() {
+            var canvas = document.getElementById('canvas');
+            canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+            return canvas;
+        })(),
+        setStatus: function(text) {
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) { }
+    };
+
+    // For C code.
+    var dirHandle = null;
+
+    // Button handler.
+    document.getElementById('btnOpenLocalProject').onclick = async () => {
+	// Open dirHandle.
+        try {
+            dirHandle = await window.showDirectoryPicker({mode: "read"});
+            if (typeof dirHandle === 'undefined') {
+                alert('フォルダを開けません。');
+                return;
+            }
+        } catch (e) {
+            alert('このブラウザではフォルダの選択が許可されていません。');
+            return;
+        }
+
+	// Hide the loader.
+	var loaderElement = document.getElementById('loader');
+        loaderElement.hidden = true;
+        loaderElement.style.position = '';
+
+        // Start execution.
+        Module.ccall('onLoadProject', null, null, null);
+    };
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>

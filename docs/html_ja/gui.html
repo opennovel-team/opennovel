@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>OpenNovel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1 id="gui">GUIの作り方</h1>
+<p>OpenNovel のGUI とは、タイトルメニュー画面やシステム UI を設計するための機能です。
+GUI は 1 枚のメニュー画面であり、複数のボタンから構成されます。</p>
+<p>ここではタイトルメニュー画面を例に説明しています。</p>
+<h2 id="">タイトルメニュー画面の作り方</h2>
+<h3 id="-1">まずはじめに</h3>
+<p>サンプルゲームの中身を見ていきましょう。</p>
+<h3 id="-2">タイトル画面の呼び出し箇所</h3>
+<p><code>txt/init.txt</code> の中で、<code>@gui title.txt</code> と書いてある行を探してみてください。
+これがタイトルメニュー画面の呼び出し箇所です。
+タイトルメニュー画面はGUI機能を使って実現されています。</p>
+<p><code>title.txt</code> というのは、<code>gui/</code> フォルダに入っている <code>title.txt</code> のことです。
+このファイルは GUI ファイルと呼ばれています。</p>
+<h3 id="gui-1">GUI ファイル の中身</h3>
+<p><code>gui/title.txt</code> ファイルを開いてみてください。
+まず先頭に、下記のように書かれています。</p>
+<pre><code># このファイルの基本設定
+global {
+    # 下記の画像を使用する
+    base:   title/idle.png;
+    idle:   title/idle.png;
+    hover:  title/hover.png;
+    active: title/hover.png;
+
+    # フェードイン時間(秒)
+    fadein: 0.2;
+
+    # フェードアウト時間(秒)
+    fadeout: 0.2;
+}
+</code></pre>
+<p>この記述はGUIファイルの設定で、それぞれの指定の意味は下記のとおりです。</p>
+<table>
+<thead>
+<tr>
+<th>指定名</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base:</td>
+<td>一番下の背景となるレイヤーの指定。この base: を指定しなければゲームのステージ（背景、キャラ）が表示される。base: に画像ファイルを指定すると画像が表示される。</td>
+</tr>
+<tr>
+<td>idle:</td>
+<td>ボタンがマウスでポイントされていないときに、ボタンの領域に表示する画像。</td>
+</tr>
+<tr>
+<td>hover:</td>
+<td>ボタンがマウスでポイントされた時に、ボタンの領域に表示する画像。</td>
+</tr>
+<tr>
+<td>active:</td>
+<td>スライダーのノブやトグルボタンで利用する画像。単純なタイトル画面では使いませんので、idleやhoverと同じ画像を指定すればよいです。</td>
+</tr>
+<tr>
+<td>fadein:</td>
+<td>フェードイン時間(秒)。</td>
+</tr>
+<tr>
+<td>fadeout:</td>
+<td>フェードアウト時間(秒)。</td>
+</tr>
+<tr>
+<td>clickcancel:</td>
+<td>ボタン以外の箇所をクリックされた場合にGUIをキャンセルするか。</td>
+</tr>
+<tr>
+<td>escapecancel:</td>
+<td>Escキーが押された場合にGUIをキャンセルするか。</td>
+</tr>
+<tr>
+<td>cancelse:</td>
+<td>キャンセル時のSEファイル。</td>
+</tr>
+<tr>
+<td>saveslots:</td>
+<td>1画面あたりのセーブデータ表示数。セーブ画面とロード画面で使用。</td>
+</tr>
+<tr>
+<td>historyslots:</td>
+<td>1画面あたりのヒストリ表示数。ヒストリ画面で使用。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="-3">ボタン画像の準備について</h3>
+<ul>
+<li>他のエンジンと違って、個々の小さなボタンの画像を使いません</li>
+<li>代わりに、画面全体の中にボタンを配置した画像を利用します</li>
+<li>このデータを作るには、画像編集ソフトやペイントソフトのレイヤー機能を使います</li>
+</ul>
+<h3 id="titletxt">title.txt ファイルの構造</h3>
+<p><code>title.txt</code> ファイルの続きについて見ていきます。
+大まかに見ると4つのボタンについて書かれています。
+遠目に眺めてみると、次の構造になっていることがわかります。</p>
+<pre><code>START {
+    ...
+}
+
+LOAD {
+    ....
+}
+
+CONFIG {
+    ...
+}
+
+QUIT {
+    ...
+}
+</code></pre>
+<h3 id="start">START ボタンの中身</h3>
+<p>ここで START ボタンの中をよく見ていきます。</p>
+<pre><code># STARTボタン
+START {
+    # 種類:ラベルへジャンプ
+    type: goto;
+
+    # ジャンプ先のラベル
+    label: START;
+
+    # 座標とサイズ
+    x: 2;
+    y: 495;
+    width: 314;
+    height: 192;
+
+    # ポイントされたときの効果音
+    pointse: btn-change.ogg;
+
+    # クリックされたときの効果音
+    clickse: click.ogg;
+}
+</code></pre>
+<p>わかる部分、わからない部分があると思います。さらに詳しく見ていきましょう。</p>
+<h3 id="-4">クリックされたらラベルへジャンプ</h3>
+<p><code>type: goto;</code> というのは、このボタンが押されたときに、「実行中のシナリオファイルどこかのラベルにジャンプする」、という意味です。
+ラベルというのは、シナリオの中で、<code>:</code> から始まる行のことです。</p>
+<p><code>label: START;</code> というのは、このボタンが押されたときに、「シナリオファイルの <code>:START</code> という行にジャンプする」、という意味です。</p>
+<h3>座標とサイズ</h3>
+<p>
+  座標とサイズですが、これは <code>Photoshop</code> や <code>CLIP STUDIO PAINT</code> などのツールで、
+  ボタンの位置とサイズを確認して書いてください。
+</p>
+<h3>これでOK</h3>
+<p>
+  たったこれだけです。意外と難しくなかった、という感想を持たれたと思います。
+</p>
+<h2>ボタンを増やすには？</h2>
+<ul>
+  <li>START { ... } のブロックをコピーして、新しいブロックを作ってみましょう</li>
+  <li>コピー先の START の部分には自分で新しい名前を付けてください</li>
+  <li>アルファベットならなんでもいいです。(実を言うとSTARTが2つあってもそのまま動きます)</li>
+</ul>
+<h2 id="-5">ボタンの種類</h2>
+<table>
+<thead>
+<tr>
+<th>記述</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type: goto;</td>
+<td>押されるとラベルにジャンプします。ラベルは label: で指定します。</td>
+</tr>
+<tr>
+<td>type: gui;</td>
+<td>押されると GUI にジャンプするボタンです。</td>
+</tr>
+<tr>
+<td>type: gallery;</td>
+<td>変数が 0 でない場合のみ表示され、押されるとラベルにジャンプするボタンです。変数は var: で指定し、ラベルは label: で指定します。</td>
+</tr>
+<tr>
+<td>type: mastervol;</td>
+<td>マスター音量のスライダーです。</td>
+</tr>
+<tr>
+<td>type: bgmvol;</td>
+<td>BGM音量のスライダーです。</td>
+</tr>
+<tr>
+<td>type: sevol;</td>
+<td>SE音量のスライダーです。</td>
+</tr>
+<tr>
+<td>type: charactervol;</td>
+<td>キャラクタ音量のスライダーです。index: でキャラクタ番号を指定します。</td>
+</tr>
+<tr>
+<td>type: textspeed;</td>
+<td>テキストスピードのスライダーです。</td>
+</tr>
+<tr>
+<td>type: autospeed;</td>
+<td>オートモードスピードのスライダーです。</td>
+</tr>
+<tr>
+<td>type: preview;</td>
+<td>テキストのプレビュー領域です。</td>
+</tr>
+<tr>
+<td>type: fullscreen;</td>
+<td>フルスクリーン移行のボタンです。</td>
+</tr>
+<tr>
+<td>type: window;</td>
+<td>ウィンドウ移行のボタンです。</td>
+</tr>
+<tr>
+<td>type: font;</td>
+<td>デフォルトフォントを変更するボタンです。file: でフォントファイルを指定します。</td>
+</tr>
+<tr>
+<td>type: default;</td>
+<td>設定をデフォルトに戻すボタンです。</td>
+</tr>
+<tr>
+<td>type: savepage;</td>
+<td>セーブデータのページ番号のボタンです。index: でページ番号を指定します。</td>
+</tr>
+<tr>
+<td>type: save;</td>
+<td>セーブデータのボタンです。index: でページ内のスロット番号を指定します。</td>
+</tr>
+<tr>
+<td>type: load;</td>
+<td>ロードデータのボタンです。index: でページ内のスロット番号を指定します。</td>
+</tr>
+<tr>
+<td>type: auto;</td>
+<td>押されるとオートモードに移行するボタンです。</td>
+</tr>
+<tr>
+<td>type: skip;</td>
+<td>押されるとスキップモードに移行するボタンです。</td>
+</tr>
+<tr>
+<td>type: title;</td>
+<td>押されるとタイトル画面に戻るボタンです。</td>
+</tr>
+<tr>
+<td>type: history;</td>
+<td>押されるとヒストリ表示に移行するボタンです。</td>
+</tr>
+<tr>
+<td>type: historyscroll;</td>
+<td>ヒストリ表示の縦スクロールのスライダーです。</td>
+</tr>
+<tr>
+<td>type: historyscroll-horizontal;</td>
+<td>ヒストリ表示の横スクロールのスライダーです。</td>
+</tr>
+<tr>
+<td>type: cancel;</td>
+<td>GUIをキャンセルするボタンです。</td>
+</tr>
+<tr>
+<td>type: quit;</td>
+<td>ゲームを終了するボタンです。</td>
+</tr>
+<tr>
+<td>type: namevar;</td>
+<td>名前入力画面で利用する名前変数表示の領域です。namevar: で名前変数の文字(a-z)を指定します。</td>
+</tr>
+<tr>
+<td>type: char;</td>
+<td>名前入力画面で利用する文字入力ボタンです。msg: で入力する文字列を指定します。msg: には [clear], [backspace], [ok] の特殊文字も指定できます。</td>
+</tr>
+<tr>
+<td>type: wms;</td>
+<td>押されるとWMSを実行するボタンです。file: でWMSファイルを指定します。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-6">ボタンのオプション</h2>
+<table>
+<thead>
+<tr>
+<th>記述</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type:</td>
+<td>ボタンの種類です。</td>
+</tr>
+<tr>
+<td>x:</td>
+<td>ボタンのX座標です。</td>
+</tr>
+<tr>
+<td>y:</td>
+<td>ボタンのY座標です。</td>
+</tr>
+<tr>
+<td>width:</td>
+<td>ボタンの幅です。</td>
+</tr>
+<tr>
+<td>height:</td>
+<td>ボタンの高さです。</td>
+</tr>
+<tr>
+<td>label:</td>
+<td>ラベルの指定です。</td>
+</tr>
+<tr>
+<td>index:</td>
+<td>セーブ・ロード・ヒストリのボタンでページ内のスロット番号です。</td>
+</tr>
+<tr>
+<td>clear-r:</td>
+<td>ボタンの背景クリア色です。白っぽいボタンなら白のRGBコードを指定します。</td>
+</tr>
+<tr>
+<td>clear-g:</td>
+<td>ボタンの背景クリア色です。白っぽいボタンなら白のRGBコードを指定します。</td>
+</tr>
+<tr>
+<td>clear-b:</td>
+<td>ボタンの背景クリア色です。白っぽいボタンなら白のRGBコードを指定します。</td>
+</tr>
+<tr>
+<td>margin:</td>
+<td>セーブ・ロード・ヒストリのボタンで、内側のマージンです。</td>
+</tr>
+<tr>
+<td>pointse:</td>
+<td>ボタンがポイントされたときに再生するSEです。</td>
+</tr>
+<tr>
+<td>clickse:</td>
+<td>ボタンがクリックされたときに再生するSEです。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-7">スライダーボタンについて</h2>
+<p>アクティブ画像にスライダーのノブを描いておきます。
+サンプルゲームを参考にしてください。</p>
+<p>横長のスライダーの場合、ノブの幅と高さはボタンの高さと等しくなります。
+縦長のスライダーの場合、ノブの幅と高さはボタンの幅と等しくなります。</p>
+<h2 id="-8">ヒストリーやセーブ画面での調整</h2>
+<p>セーブ・ロード・ヒストリのスロット内の文字に、灰色のふちどりが生じることがあります。
+これは、透明なピクセルのRGB値が黒になっているからです。
+ふちどりを消すには、ボタンの定義に以下のように背景色を記述します。</p>
+<pre><code># 背景色
+clear-r: 255;
+clear-g: 255;
+clear-b: 255;
+</code></pre>
+<p>ファイル記載例は下記の通りです。</p>
+<pre><code># セーブデータ1番目
+SAVESLOT1 {
+   # 種類:セーブ
+   type: save;
+
+   # セーブデータ番号0
+   index: 0;
+
+   # 背景色
+   clear-r: 255;
+   clear-g: 255;
+   clear-b: 255;
+
+   # 座標とサイズ
+   x: 167;
+   y: 153;
+   width: 950;
+   height: 162;
+
+   # 画像とテキストのマージン
+   margin: 20;
+
+   # ポイントされたときの効果音
+   pointse: btn-change.ogg;
+
+   # クリックされたときの効果音
+   clickse: click.ogg;
+
+}
+</code></pre>
+<h2 id="-9">独自メニュー画面について</h2>
+<p>システムボタンが押されたときに表示されるメニューに、独自のメニューボタンをいくつでも追加できます。
+たとえば、ゲームの進行に合わせて内容が変化するメニューを作ることもできます。
+このようなメニュー画面を作る際に必要となる機能を紹介します。</p>
+<h3 id="-10">メニュー画面から別なメニュー画面へジャンプする場合</h3>
+<pre><code># 独自メニュー画面にジャンプするボタン
+MY_MENU_1 {
+   type: gui;
+   file: my-menu-1.txt;
+}
+</code></pre>
+<h3 id="-11">メニュー画面からシナリオファイル内のラベルへジャンプして戻らない場合</h3>
+<pre><code># ラベルにジャンプするボタン
+MY_MENU_1 {
+   type: goto;
+   label: my-menu-1-label;
+}
+</code></pre>
+<h3 id="-12">メニュー画面からシナリオファイル内のラベルへジャンプして戻る場合</h3>
+<pre><code># ラベルにジャンプするボタン
+MY_MENU_1 {
+   type: goto;
+   label: my-menu-1-label;
+   gosub: yes;
+}
+</code></pre>
+<p>この場合、ジャンプ先から元のメッセージに戻るには、<code>@return</code> を使います。</p>
+<p><code>gosub: yes;</code> の代わりに <code>gosub-back: yes;</code> を使えば、複数のメニュー画面やシナリオファイルを経由した場合でも、<code>@return</code> で元のメッセージに戻ることができます。</p>
+<p><code>gosub: yes;</code> の代わりに <code>gosub-gui: yes;</code> を使えば、<code>@return</code> で元のGUIに戻ることができます。</p></body>
+</html>

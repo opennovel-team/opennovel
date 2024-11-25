@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+
+override_dh_auto_configure:
+	./configure --prefix=$(CURDIR)/debian/opennovel/usr --host=linux
+
+override_dh_auto_install:
+	$(MAKE) install
+
+%:
+	dh $@
