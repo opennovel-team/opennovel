@@ -2520,6 +2520,10 @@ static bool reparse_if_block(int index, char *params, int *end_index)
 		if (accepted == SMODE_ACCEPT_NONE)
 			continue;
 
+		/* ifブロックのとき */
+		if (accepted == SMODE_ACCEPT_IF)
+			continue;
+
 		/* switchブロックのとき */
 		if (accepted == SMODE_ACCEPT_SWITCH)
 			continue;

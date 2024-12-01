@@ -16,75 +16,75 @@ onengine
 onpack
 objs
 
-apps/engine-windows/onengine.exe
-apps/engine-windows/onpack.exe
-apps/engine-windows/libroot
-apps/engine-windows/objs
-apps/engine-windows/dx12headers
+build/engine-windows/onengine.exe
+build/engine-windows/onpack.exe
+build/engine-windows/libroot
+build/engine-windows/objs
+build/engine-windows/dx12headers
 
-apps/engine-macos/engine-macos.xcodeproj/project.xcworkspace
-apps/engine-macos/engine-macos.xcodeproj/xcuserdata
-apps/engine-macos/build
-apps/engine-macos/macos-src
-apps/engine-macos/*.dmg
+build/engine-macos/engine-macos.xcodeproj/project.xcworkspace
+build/engine-macos/engine-macos.xcodeproj/xcuserdata
+build/engine-macos/build
+build/engine-macos/macos-src
+build/engine-macos/*.dmg
 
-apps/engine-linux/objs
-apps/engine-linux/libroot
-apps/engine-linux/onengine
-apps/engine-linux/onpack
+build/engine-linux/objs
+build/engine-linux/libroot
+build/engine-linux/onengine
+build/engine-linux/onpack
 
-apps/engine-ios/engine-ios.xcodeproj/project.xcworkspace
-apps/engine-ios/engine-ios.xcodeproj/xcuserdata
-apps/engine-ios/engine-ios/data01.arc
-apps/engine-ios/ios-src
+build/engine-ios/engine-ios.xcodeproj/project.xcworkspace
+build/engine-ios/engine-ios.xcodeproj/xcuserdata
+build/engine-ios/engine-ios/data01.arc
+build/engine-ios/ios-src
 
-apps/engine-android/.idea
-apps/engine-android/app/.cxx
-apps/engine-android/app/src/main/assets
-apps/engine-android/app/src/main/cpp
-apps/engine-android/libopennovel-*.so
-apps/engine-android/ndk
-apps/engine-android/android-src
+build/engine-android/.idea
+build/engine-android/app/.cxx
+build/engine-android/app/src/main/assets
+build/engine-android/app/src/main/cpp
+build/engine-android/libopennovel-*.so
+build/engine-android/ndk
+build/engine-android/android-src
 
-apps/engine-wasm/html
-apps/engine-wasm/libwebp-1.3.2/
+build/engine-wasm/html
+build/engine-wasm/libwebp-1.3.2/
 
-apps/engine-wasm-local/html
-apps/engine-wasm-local/libwebp-1.3.2/
+build/engine-wasm-local/html
+build/engine-wasm-local/libwebp-1.3.2/
 
-apps/engine-unity/unity-src
-apps/engine-unity/libopennovel.dll
-apps/engine-unity/libopennovel.dylib
-apps/engine-unity/libopennovel.so
-apps/engine-unity/libopennovel.nso
+build/engine-unity/unity-src
+build/engine-unity/libopennovel.dll
+build/engine-unity/libopennovel.dylib
+build/engine-unity/libopennovel.so
+build/engine-unity/libopennovel.nso
 
-apps/engine-freebsd/objs
-apps/engine-freebsd/libroot
-apps/engine-freebsd/onengine
-apps/engine-freebsd/onpack
+build/engine-freebsd/objs
+build/engine-freebsd/libroot
+build/engine-freebsd/onengine
+build/engine-freebsd/onpack
 
-apps/engine-netbsd/objs
-apps/engine-netbsd/libroot
-apps/engine-netbsd/onengine
-apps/engine-netbsd/onpack
+build/engine-netbsd/objs
+build/engine-netbsd/libroot
+build/engine-netbsd/onengine
+build/engine-netbsd/onpack
 
-apps/engine-openbsd/objs
-apps/engine-openbsd/libroot
-apps/engine-openbsd/onengine
-apps/engine-openbsd/onpack
+build/engine-openbsd/objs
+build/engine-openbsd/libroot
+build/engine-openbsd/onengine
+build/engine-openbsd/onpack
 
-apps/engine-solaris/objs
-apps/engine-solaris/libroot
-apps/engine-solaris/onengine
-apps/engine-solaris/onpack
+build/engine-solaris/objs
+build/engine-solaris/libroot
+build/engine-solaris/onengine
+build/engine-solaris/onpack
 
-apps/editor-windows/libroot
-apps/editor-windows/objs
-apps/editor-windows/editor.exe
-apps/editor-windows/web-test.exe
-apps/editor-windows/dx12headers
+build/editor-windows/libroot
+build/editor-windows/objs
+build/editor-windows/editor.exe
+build/editor-windows/web-test.exe
+build/editor-windows/dx12headers
 
-apps/editor-macos/pro-macos.xcodeproj/project.xcworkspace
-apps/editor-macos/pro-macos.xcodeproj/xcuserdata
-apps/editor-macos/build
-apps/editor-macos/*.dmg
+build/editor-macos/pro-macos.xcodeproj/project.xcworkspace
+build/editor-macos/pro-macos.xcodeproj/xcuserdata
+build/editor-macos/build
+build/editor-macos/*.dmg

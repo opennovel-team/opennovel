@@ -154,6 +154,11 @@ static struct gui_button {
 	bool gosub_gui;
 	bool gosub_back;
 
+	/* rt.imgを使わないボタンのみ */
+	struct image *img_idle;
+	struct image *img_hover;
+	struct image *img_active;
+
 	/*
 	 * 実行時の情報
 	 */
@@ -173,7 +178,7 @@ static struct gui_button {
 		/* ボリューム・スピード・スクロールバーのスライダーの値 */
 		float slider;
 
-		/* サムネイル、フォント描画用 */
+		/* 画像用 */
 		struct image *img;
 
 		/* ヒストリのオフセット */
@@ -439,6 +444,12 @@ void cleanup_gui(void)
 			free(button[i].clickse);
 		if (button[i].pointse != NULL)
 			free(button[i].pointse);
+		if (button[i].img_idle != NULL)
+			destroy_image(button[i].img_idle);
+		if (button[i].img_hover != NULL)
+			destroy_image(button[i].img_hover);
+		if (button[i].img_active != NULL)
+			destroy_image(button[i].img_active);
 		if (button[i].rt.img != NULL)
 			destroy_image(button[i].rt.img);
 	}
@@ -844,6 +855,30 @@ static bool set_button_key_value(const int index, const char *key, const char *v
 		b->gosub_gui = true;
 	} else if (strcmp("gosub-back", key) == 0) {
 		b->gosub_back = true;
+	} else if (strcmp("image-idle", key) == 0) {
+		b->img_idle = create_image_from_file(CG_DIR, val);
+		if (b->img_idle == NULL)
+			return false;
+		if (b->width == 0 || b->height == 0) {
+			b->width = b->img_idle->width;
+			b->height = b->img_idle->height;
+		}
+	} else if (strcmp("image-hover", key) == 0) {
+		b->img_hover = create_image_from_file(CG_DIR, val);
+		if (b->img_hover == NULL)
+			return false;
+		if (b->width == 0 || b->height == 0) {
+			b->width = b->img_hover->width;
+			b->height = b->img_hover->height;
+		}
+	} else if (strcmp("image-active", key) == 0) {
+		b->img_active = create_image_from_file(CG_DIR, val);
+		if (b->img_active == NULL)
+			return false;
+		if (b->width == 0 || b->height == 0) {
+			b->width = b->img_active->width;
+			b->height = b->img_active->height;
+		}
 	} else {
 		log_gui_unknown_button_property(key);
 		return false;

@@ -675,6 +675,7 @@ static void init_flags_and_vars(void)
 	} else {
 		gui_sys_flag = false;
 		gui_cmd_flag = false;
+		gui_gosub_flag = false;
 	}
 
 	/* ロードされたばかりかチェックする */

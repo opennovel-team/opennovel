@@ -1,0 +1,6 @@
+func main() {
+    // ローカル変数をクリアする
+    for(i in 0..9999) {
+        s2_set_variable(i, 0);
+    }
+}
