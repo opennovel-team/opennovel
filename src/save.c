@@ -920,6 +920,9 @@ bool quick_load(bool extra)
 	if (is_message_active())
 		clear_message_active();
 
+	/* ロード画面から戻ったという状態をクリアする */
+	(void)is_return_from_sysmenu_gosub();
+
 	return true;
 }
 
@@ -967,6 +970,9 @@ bool execute_load(int index)
 
 	if (is_message_active())
 		clear_message_active();
+
+	/* ロード画面から戻ったという状態をクリアする */
+	(void)is_return_from_sysmenu_gosub();
 
 	return true;
 }
@@ -1280,6 +1286,10 @@ static bool deserialize_sound(struct rfile *rf)
 			return false;
 	}
 	set_mixer_input(SE_STREAM, w);
+
+	/* VOICEを停止する */
+	set_bgvoice_playing(false);
+	set_mixer_input(VOICE_STREAM, NULL);
 
 	return true;
 }

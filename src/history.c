@@ -198,6 +198,8 @@ bool append_message(const char *msg)
 	/* ヒストリがない状態で追記されたとき */
 	if (last_history_index == -1) {
 		last_history_index = 0;
+		history_index = 1;
+		history_count = 1;
 		history[0].text = strdup("");
 		if (history[0].text == NULL) {
 			log_memory();

@@ -9,7 +9,7 @@ SRCS_PROJECT = \
 	engine-macos/GameView.m \
 	engine-macos/main.m
 
-all: game.dmg src
+all: engine.dmg src
 
 engine.dmg: libroot $(SRCS_MAIN) $(SRCS_APPLE) $(SRCS_PROJECT)
 	@echo "Building Game.app"
