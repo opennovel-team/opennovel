@@ -531,6 +531,9 @@ bool reparse_script_for_structured_syntax(void);
 /* コマンド名からコマンドタイプを返す */
 int get_command_type_from_name(const char *name);
 
+/* 行番号のダンプを行う */
+void write_linenum(void);
+
 #endif /* defined(USE_EDITOR) */
 
 #endif

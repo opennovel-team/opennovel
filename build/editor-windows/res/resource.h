@@ -47,7 +47,8 @@
 #define ID_RELOAD                           168
 #define ID_SAVE                             169
 #define ID_DEBUG_LAYERS                     170
-#define ID_QUIT                             171
+#define ID_DEBUG_LINENUM                    171
+#define ID_QUIT                             172
 
 /* Run Menu / Buttons */
 #define ID_CONTINUE                         180

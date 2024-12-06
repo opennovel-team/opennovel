@@ -1140,6 +1140,13 @@ static VOID InitMenu(HWND hWnd)
 		L"レイヤー画像のデバッグ出力";
 	InsertMenuItem(hMenuFile, nOrder++, TRUE, &mi);
 
+	/* Create a menu item for "Write save positions for debugging" */
+	mi.wID = ID_DEBUG_LINENUM;
+	mi.dwTypeData = bEnglish ?
+		L"Write line numbers for debugging" :
+		L"セーブ位置のデバッグ出力";
+	InsertMenuItem(hMenuFile, nOrder++, TRUE, &mi);
+
 	/* Create a menu item for "Quit" */
 	mi.wID = ID_QUIT;
 	mi.dwTypeData = bEnglish ?
@@ -2169,6 +2176,9 @@ static void OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case ID_DEBUG_LAYERS:
 		write_layers_to_files();
+		break;
+	case ID_DEBUG_LINENUM:
+		write_linenum();
 		break;
 	case ID_QUIT:
 		DestroyWindow(hWndMain);

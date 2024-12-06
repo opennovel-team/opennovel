@@ -3506,4 +3506,27 @@ int get_command_type_from_name(const char *name)
 	return -1;
 }
 
+/*
+ * 行番号のダンプを行う
+ */
+void write_linenum(void)
+{
+	FILE *fp;
+	const char *fname;
+	int i;
+
+	fname = get_script_file_name();
+
+	fp = fopen(fname, "w");
+	if (fp == NULL) {
+		log_error("Failed to open %s.", fname);
+		return;
+	}
+
+	for (i = 0; i < cmd_size; i++)
+		fprintf(fp, "%s:%d: %s\n", cmd[i].file, i, cmd[i].text);
+
+	fclose(fp);
+}
+
 #endif /* USE_EDITOR */
