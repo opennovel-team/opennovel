@@ -1,28 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>OpenNovel Manual</title>
+  <title>OpenNovel</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<h1>Comparison With Other Game Engines</h1>
-
-<h2>What are the features of OpenNovel?</h2>
+<h1 id="frequentlyaskedquetions">Frequently Asked Quetions</h1>
+<h2 id="designphilosophy">Design Philosophy</h2>
+<p>OpenNovel consists of expertise of parallel processing and low power programming.</p>
+<p>Our first motivation of the development of this software is a lack of OSS visual novel engines which run well on smartphones.
+The development was not so easy but we achieved "runs well on smartphones". </p>
+<p>Smartphones have very low computer performances as they don't have cooling fans.
+They have about 1/100 performance comparing to PC.
+For example, assume that a rendering process can be done by a PC CPU with no problem.
+That process may be done by a smartphone CPU in a short period,
+but a few seconds later, it will be not properly done due to thermal throttling.
+Such performance problem can be solved by a usage of GPU.
+On the other hand, GPU proformances very differ on Android and iPhone.</p>
+<p>Our method is a hybrid of CPU and GPU.
+It renders the first and the last frames of a cross-fading by CPU, and interpolates them by GPU.
+It utilizes CPU in a short period, and utilizes GPU with very low workload.</p>
+<h2 id="comparisonwithothergameengines">Comparison With Other Game Engines</h2>
+<h3 id="whatarethefeaturesofopennovel">What are the features of OpenNovel?</h3>
 <ul>
-  <li>OpenNovel is one of the leading novel engines for iOS and Android;</li>
-  <li>On smartphones, OpenNovel does not employ Unity or other third-party engines;</li>
-  <li>OpenNovel provides a Unity version to enable home game console porting.</li>
+<li>OpenNovel is one of the leading novel engines for iOS and Android;<ul>
+<li>On smartphones, OpenNovel does not employ Unity or other third-party engines;</li>
+<li>OpenNovel provides a Unity version to enable home game console porting.</li></ul></li>
 </ul>
-
-<h2>Is it possible to switch to OpenNovel from other engines?</h2>
+<h3 id="isitpossibletoswitchtoopennovelfromotherengines">Is it possible to switch to OpenNovel from other engines?</h3>
 <ul>
-  <li>Switching works best if one plans to make creations for iOS and Android only.</li>
+<li>Switching works best if one plans to make creations for iOS and Android only.</li>
 </ul>
-
-<h2>Where can works made with OpenNovel be published?</h2>
+<h3 id="wherecanworksmadewithopennovelbepublished">Where can works made with OpenNovel be published?</h3>
 <ul>
   <li>Windows / Web browsers
   <ul>
@@ -53,133 +64,94 @@
     </ul>
   </li>
 </ul>
-
-<h2>Can features of other engines be implemented in OpenNovel?</h2>
+<h3 id="canfeaturesofotherenginesbeimplementedinopennovel">Can features of other engines be implemented in OpenNovel?</h3>
 <p>
   That depends: For example, PCs are usually a hundred times more powerful than smartphones, thus, certain features must not be implemented in consideration of software porting.
 </p>
-
-<h1>Installation Issues</h1>
-
-<h2>The downloaded OpenNovel release does not run!</h2>
-<ul>
-  <li>It may be that antivirus software has mistakenly identified OpenNovel as a virus.</li>
-  <li>Solutions:
-    <ul>
-      <li>Do Windows update;</li>
-      <li>Update virus definition files;</li>
-      <li>Temporarily disable virus scanning;</li>
-      <li>Examine antivirus quarantined files and unmark OpenNovel;</li>
-      <li>Download OpenNovel to a different folder;</li>
-      <li>Install OpenNovel from a different folder;</li>
-      <li>Change the location of OpenNovel projects.</li>
-    </ul>
-  </li>
-</ul>
-
-<h1>Creating Works With OpenNovel</h1>
-
-<h2>Can multiple characters be displayed on a screen?</h2>
+<h2 id="creatingworkswithopennovel">Creating Works With OpenNovel</h2>
+<h3 id="canmultiplecharactersbedisplayedonascreen">Can multiple characters be displayed on a screen?</h3>
 <ul>
   <li>That can be achieved through OpenNovel rendering system called <a href="ciel.html">Ciel</a> (similar to YU-RIS/ERIS engine);</li>
   <li>For those who find Ciel too complicated, <a href="reference.html#chch"><code>@chch</code></a>  command should be used instead.</li>
 </ul>
-
-<h2>Can a message box stay displayed while a character is changed?</h2>
+<h3 id="canamessageboxstaydisplayedwhileacharacterischanged">Can a message box stay displayed while a character is changed?</h3>
 <p>
   Change =0 to =1 in the project.txt file (as in the following example): 
 </p>
 <pre><code>msgbox.show.on.ch=1</code></pre>
-
-<h2>Can a character’s face be displayed next to a message box?</h2>
+<h3 id="canacharactersfacebedisplayednexttoamessagebox">Can a character’s face be displayed next to a message box?</h3>
 <p>
   An image of a character can be displayed at a special position via <code>face</code> instruction. Note that fade-in&nbsp;/&nbsp;fade-out time specifications are ignored for such images.
 </p>
 <pre><code>@ch face filename.png</code></pre>
-
-<h2>Can facial expression changes be done using only face parts?</h2>
+<h3 id="canfacialexpressionchangesbedoneusingonlyfaceparts">Can facial expression changes be done using only face parts?</h3>
 <ul>
   <li>For smartphones, such changes&nbsp;— considering loading time, memory use, and composing time&nbsp;— may be impracticable, therefore, these features have not been implemented.</li>
 </ul>
-
-<h2>Resolving font change issues:</h2>
+<h3 id="resolvingfontchangeissues">Resolving font change issues:</h3>
 <ul>
   <li>A font file name is recorded in the saved data, which may cause problems (such as not being able to change the font, or being told that a font file&nbsp;— that should not have been specified&nbsp;— cannot be opened).</li>
   <li>This issue can be solved by closing the program, deleting “<code>save</code>” folder (saved data), and restarting the program.  </li>
 </ul>
-
-<h2>What are the steps to create a title screen?</h2>
+<h3 id="whatarethestepstocreateatitlescreen">What are the steps to create a title screen?</h3>
 <p>
   Please refer to “<a href="menu.html">How to Make a Menu Screen</a>” for the instructions.
 </p>
-
-<h2>What are the options for a protagonist’s name?</h2>
+<h3 id="whataretheoptionsforaprotagonistsname">What are the options for a protagonist’s name?</h3>
 <p>
   One can enter up to twenty-six names (from “%a” to “%z”).
 </p>
-
-<h2>How to generate blinking eyes effect?</h2>
+<h3 id="howtogenerateblinkingeyeseffect">How to generate blinking eyes effect?</h3>
 <p>
   Please refer to “<a href="eye-blink.html">Eye Blink</a>.”
 </p>
-
-<h2>How to produce lip synchronization?</h2>
+<h3 id="howtoproducelipsynchronization">How to produce lip synchronization?</h3>
 <p>
   Please refer to “<a href="lip-sync.html">Lip Sync</a>.”
 </p>
-
-<h2>How to display dates and correspondences?</h2>
+<h3 id="howtodisplaydatesandcorrespondences">How to display dates and correspondences?</h3>
 <ul>
   <li>Please use text layer and <a href="reference.html#text"><code>@text</code></a>.</li>
 </ul>
-
-<h2>How to apply a filter to the entire screen?</h2>
+<h3 id="howtoapplyafiltertotheentirescreen">How to apply a filter to the entire screen?</h3>
 <ul>
   <li>Use the effect layer;</li>
   <li>Cheap Android smartphones incapable of good image rendering are not recommended;</li>
   <li>Try creating an image closest to the color filter applied.</li>
 </ul>
-
-<h2>Does OpenNovel has a macro function?</h2>
+<h3 id="doesopennovelhasamacrofunction">Does OpenNovel has a macro function?</h3>
 <ul>
   <li>Yes, there is <a href="reference.html#gosub"><code>@gosub</code></a> command available.</li>
   <li>Apply <a href="reference.html#using"><code>using</code></a> instruction to place macros into an external file.</li>
 </ul>
-
-<h2>Does OpenNovel support CG viewing mode?</h2>
+<h3 id="doesopennovelsupportcgviewingmode">Does OpenNovel support CG viewing mode?</h3>
 <ul>
   <li>Yes, using <a href="reference.html#menu"><code>@menu</code></a> command.</li>
   <li>Specify in the button configuration&nbsp;— <code>type: gallery;</code> and variable (for example)&nbsp;— <code>var: $1;</code></li>
   <li>If variable is 0, the button is not displayed;</li>
   <li>If variable is not 0, the button is displayed.</li>
 </ul>
-
-<h2>Can a branch chart be created?</h2>
+<h3 id="canabranchchartbecreated">Can a branch chart be created?</h3>
 <ul>
   <li>Yes, using <a href="reference.html#menu"><code>@menu</code></a> command.</li>
 </ul>
-
-<h2>Can a full-screen project be produced?</h2>
+<h3 id="canafullscreenprojectbeproduced">Can a full-screen project be produced?</h3>
 <p>
   Yes.
 </p>
-
-<h2>Is it possible to center a ruby?</h2>
+<h3 id="isitpossibletocenteraruby">Is it possible to center a ruby?</h3>
 <p>
   Yes, it can be manually adjusted using half-width spaces (in fact, that is how professional developers do it). 
 </p>
-
-<h2>Does OpenNovel support multiple languages?</h2>
+<h3 id="doesopennovelsupportmultiplelanguages">Does OpenNovel support multiple languages?</h3>
 <p>
   Yes, please refer to “<a href="multilingual.html">Multilingualization</a>.”
 </p>
-
-<h2>Are there instructions on how to use plugin scripts?</h2>
+<h3 id="arethereinstructionsonhowtousepluginscripts">Are there instructions on how to use plugin scripts?</h3>
 <p>
   Yes, please refer to “<a href="plugin.html">Plugin Script</a>.”
 </p>
-
-<h2>What bit rate should be used for audio files?</h2>
+<h3 id="whatbitrateshouldbeusedforaudiofiles">What bit rate should be used for audio files?</h3>
 <ul>
   <li>For PCs:
     <ul>
@@ -197,13 +169,10 @@
     </ul>
   </li>
 </ul>
-
-<h2>How to manage flags properly?</h2>
+<h3 id="howtomanageflagsproperly">How to manage flags properly?</h3>
 <ul>
   <li>Please name flags in your configuration file and comment on their purpose;</li>
   <li>Over time, good project maintenance depends on that;</li>
   <li>Comments should be phrased in such a way that they can be easily read and understood even a year later.</li>
-</ul>
-
-</body>
+</ul></body>
 </html>

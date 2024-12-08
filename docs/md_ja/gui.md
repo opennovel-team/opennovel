@@ -270,31 +270,29 @@ MY_MENU_1 {
 
 ### メニュー画面からシナリオファイル内のラベルへジャンプして戻る場合
 
-```
-global {
-   ...
-   pushstate: yes;
-   ...
-}
-```
+カスタムメニューを作ってその中でシナリオファイルを呼び出す構成を採ることが可能です。
 
 ```
 button {
    type: goto;
    label: my-menu-1-label;
-   gosub-back: yes;
+   gosub: yes;
 }
 ```
 
-カスタムメニューを作ってその中でシナリオファイルを呼び出す構成を採ることが可能です。
+上記のボタンが押されると、シナリオのラベル `my-menu-1-label` にジャンプが行われます。
+シナリオで `@return` を使用すると、元の位置に戻ります。
+また、`gosub: yes;` の代わりに `gosub-gui: yes;` を使えば、`@return` で元の GUI に戻るように変更できます。
 
-カスタムメニューが押された箇所、つまり、戻り先のシナリオファイルの位置を記憶するために、
-GUI の global セクションに `pushstate: yes;` を追加します。
-もし複数の GUI を開いていく場合は、最初の、つまり入口の GUI のみに追加します。
+もしも、呼び出し先から背景やキャラを変更して、それを元に戻したい場合には、`pushstage` 指定と WMS の `s2_pop_stage()` を組み合わせ、下記のようにします。
 
-`pushstate` な GUI からラベルにジャンプする時には、`gosub-back: yes;` を追加します。
-これにより、`pushstate` で記憶した呼び出し元のシナリオファイル位置が、`@return` の戻り先に保存されます。
+```
+button {
+   type: goto;
+   label: my-menu-1-label;
+   gosub: yes;
+   pushstage: yes;
+}
+```
 
-以上の準備を行うことで、ジャンプ先のシナリオファイルで `@return` を行えば、カスタムメニューの呼び出し元に戻れるようになります。
-
-また、`gosub-back: yes;` の代わりに `gosub-gui: yes;` を使えば、`@return` で元の GUI に戻るように変更できます。
+`@return` の前に、WMSの `s2_pop_stage()` を利用することで、背景やキャラを復元できます。

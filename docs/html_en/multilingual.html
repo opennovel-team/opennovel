@@ -1,97 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>OpenNovel Manual</title>
+  <title>OpenNovel</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<h1>Multilingualization</h1>
-<p>
-  In a story file, you can write a message with a language specifier.
-</p>
-
+<h1 id="multilingualization">Multilingualization</h1>
+<p>In a scenario file, you can write a message with a language specifier.</p>
 <pre><code>+en+This is an English message.
-+ja+日本語のメッセージです。</code></pre>
-
-<p>
-  The same rule applies to lines with characters' names.
-</p>
-
++ja+日本語のメッセージです。
+</code></pre>
+<p>The same rule applies to lines with characters' names.</p>
 <pre><code>+en+*Hina*This is an English message.
-+ja+*ひな*日本語のメッセージです。</code></pre>
-
-<p>
-  <code>+en+</code> means a message will be shown only if the system locale is English.
-</p>
-<p>
-  Available languages are the following.
-</p>
-
++ja+*ひな*日本語のメッセージです。
+</code></pre>
+<p>The prefix <code>+en+</code> means a message will be shown only if the language configuration is set to English.</p>
+<p>Available languages are the following.</p>
 <table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Language</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>ja</td>
-      <td>Japanese</td>
-    </tr>
-    <tr>
-      <td>en</td>
-      <td>English</td>
-    </tr>
-    <tr>
-      <td>fr</td>
-      <td>French</td>
-    </tr>
-    <tr>
-      <td>it</td>
-      <td>Italian</td>
-    </tr>
-    <tr>
-      <td>es</td>
-      <td>Spanish</td>
-    </tr>
-    <tr>
-      <td>de</td>
-      <td>Deutsch</td>
-    </tr>
-    <tr>
-      <td>el</td>
-      <td>Greek</td>
-    </tr>
-    <tr>
-      <td>ru</td>
-      <td>Russian</td>
-    </tr>
-    <tr>
-      <td>zh</td>
-      <td>Chinese (Simplified)</td>
-    </tr>
-    <tr>
-      <td>tw</td>
-      <td>Chinese (Traditional)</td>
-    </tr>
-    <tr>
-      <td>other</td>
-      <td>Other languages</td>
-    </tr>
-  </tbody>
+<thead>
+<tr>
+<th>Code</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ja</td>
+<td>Japanese</td>
+</tr>
+<tr>
+<td>en</td>
+<td>English</td>
+</tr>
+<tr>
+<td>fr</td>
+<td>French</td>
+</tr>
+<tr>
+<td>it</td>
+<td>Italian</td>
+</tr>
+<tr>
+<td>es</td>
+<td>Spanish</td>
+</tr>
+<tr>
+<td>de</td>
+<td>German</td>
+</tr>
+<tr>
+<td>el</td>
+<td>Greek</td>
+</tr>
+<tr>
+<td>ru</td>
+<td>Russian</td>
+</tr>
+<tr>
+<td>zh</td>
+<td>Chinese (Simplified)</td>
+</tr>
+<tr>
+<td>tw</td>
+<td>Chinese (Traditional)</td>
+</tr>
+<tr>
+<td>other</td>
+<td>Other</td>
+</tr>
+</tbody>
 </table>
-
-<p>
-  If you wish to make a language selection while running a visual novel, write:
-</p>
-<pre><code>@config locale.force en</code></pre>
-<p>
-  This will force-set the current language.
-</p>
-
-</body>
+<p>If you wish to make a language selection while running a visual novel, write:</p>
+<pre><code>@config locale.force en
+</code></pre>
+<p>This will force the current language to English.</p></body>
 </html>

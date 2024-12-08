@@ -152,7 +152,7 @@ static struct gui_button {
 	/* TYPE_GOTO */
 	bool gosub;
 	bool gosub_gui;
-	bool gosub_back;
+	bool push_stage;
 
 	/* rt.imgを使わないボタンのみ */
 	struct image *img_idle;
@@ -226,9 +226,6 @@ static bool flag_gui_mode;
 
 /* システムGUIであるか */
 static bool is_sys_gui;
-
-/* pushstateのときのreturn point */
-static int deep_return_point;
 
 /* 余白のクリックでキャンセルするか */
 static bool is_click_cancel;
@@ -427,8 +424,6 @@ void cleanup_gui(void)
 {
 	int i;
 
-	deep_return_point = -1;
-
 	/* フラグを再初期化する */
 	flag_gui_mode = false;
 
@@ -612,12 +607,6 @@ static bool set_global_key_value(const char *key, const char *val)
 		return true;
 	} else if (strcmp(key, "escapecancel") == 0) {
 		is_escape_cancel = strcmp(val, "yes") == 0 ? true : false;
-		return true;
-	} else if (strcmp(key, "pushstate") == 0) {
-		if (is_sys_gui) {
-			s2_push_stage(NULL);
-			deep_return_point = get_command_index() - 1;
-		}
 		return true;
 	} else if (strcmp(key, "alt") == 0) {
 		if (conf_tts)
@@ -849,12 +838,12 @@ static bool set_button_key_value(const int index, const char *key, const char *v
 	} else if (strcmp("new-y", key) == 0) {
 		b->new_y = atoi(val);
 		b->rt.is_new_enabled = true;
+	} else if (strcmp("pushstage", key) == 0) {
+		b->push_stage = true;
 	} else if (strcmp("gosub", key) == 0) {
 		b->gosub = true;
 	} else if (strcmp("gosub-gui", key) == 0) {
 		b->gosub_gui = true;
-	} else if (strcmp("gosub-back", key) == 0) {
-		b->gosub_back = true;
 	} else if (strcmp("image-idle", key) == 0) {
 		b->img_idle = create_image_from_file(CG_DIR, val);
 		if (b->img_idle == NULL)
@@ -1292,8 +1281,6 @@ static void process_render(void)
 /* 他のコマンドやGUIへの遷移を処理する */
 static bool process_move(void)
 {
-	int i;
-
 	if (!is_finished)
 		return true;
 	if (is_fading_in || is_fading_out)
@@ -1324,41 +1311,27 @@ static bool process_move(void)
 
 	/*
 	 * ラベルへジャンプする場合:
-	 *  - @guiコマンドの場合はcmd_gui.cで処理する
-	 *  - ただしシステムGUIかカスタムシステムメニューの場合はここで処理する
-	 *    - gosubオプションがついている場合はpushも行う
+	 *  - gosubの準備をここで行う
+	 *  - システムGUIの場合はここでジャンプもする
 	 */
 	if (result_index != -1 &&
 	    (button[result_index].type == TYPE_GOTO ||
 	     button[result_index].type == TYPE_GALLERY) &&
-		(button[result_index].gosub ||
-		 button[result_index].gosub_gui ||
-		 button[result_index].gosub_back)) {
+	    (button[result_index].gosub ||
+	     button[result_index].gosub_gui)) {
+		if (is_message_active())
+			clear_message_active();
+		if (button[result_index].push_stage)
+			s2_push_stage(NULL);
+		if (button[result_index].gosub)
+			set_deep_return_point(get_command_index() - 1);
+		if (button[result_index].gosub_gui)
+			push_return_gui(gui_file);
+
+		/* @guiコマンドでない(=システムGUIである)場合、ここでジャンプする */
 		if (is_sys_gui) {
-			is_sys_gui = false;
-			if (is_message_active())
-				clear_message_active();
-			if (button[result_index].gosub)
-				push_return_point_minus_one();
-			if (button[result_index].gosub_gui)
-				push_return_gui(gui_file);
-			if (button[result_index].gosub_back) {
-				set_deep_return_point(deep_return_point);
-				deep_return_point = -1;
-			}
 			if (!move_to_label(button[result_index].label))
 				return false;
-		}
-	}
-	if (result_index == -1 && deep_return_point != -1) {
-		for (i = 0; i < BUTTON_COUNT; i++) {
-			if (button[i].type == TYPE_GOTO && button[i].gosub_back) {
-				set_deep_return_point(deep_return_point);
-				deep_return_point = -1;
-				if (!move_to_label(button[i].label))
-					return false;
-				break;
-			}
 		}
 	}
 

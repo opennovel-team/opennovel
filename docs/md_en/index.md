@@ -6,7 +6,17 @@ OpenNovel is a tool to create visual novels.
 ## Main Documents
 
 * [Tutorial](tutorial.html)
-* [Command Reference](refrence.html)
+* [Command Reference](reference.html)
+* [Font](font.html)
+* [GUI](gui.html)
+* [Anime](anime.html)
+* [Layer](layer.html)
+* [Eye-Blink](eye-blink.html)
+* [Lip-Sync](lip-sync.html)
+* [WMS](wms.html)
+* [Multilingualization](multilingual.html)
+* [Ciel](ciel.html)
+* [FAQ](faq.html)
 
 ## License
 
