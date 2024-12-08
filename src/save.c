@@ -108,6 +108,7 @@ static bool serialize_name_vars(struct wfile *wf);
 static bool serialize_local_config(struct wfile *wf);
 static bool serialize_config_helper(struct wfile *wf, bool is_global);
 static bool deserialize_all(const char *fname);
+static bool deserialize_message(struct rfile *rf);
 static bool deserialize_command(struct rfile *rf);
 static bool deserialize_stage(struct rfile *rf);
 static bool deserialize_anime(struct rfile *rf);
@@ -677,15 +678,6 @@ static bool serialize_stage(struct wfile *wf)
 		}
 	}
 
-	if (!conf_msgbox_tategaki) {
-		set_pen_position(conf_msgbox_margin_left, conf_msgbox_margin_top);
-	} else {
-		int msgbox_x, msgbox_y, msgbox_w, msgbox_h;
-		get_msgbox_rect(&msgbox_x, &msgbox_y, &msgbox_w, &msgbox_h);
-		set_pen_position(msgbox_w - conf_msgbox_margin_right - conf_font_size,
-				 conf_msgbox_margin_top);
-	}
-
 	return true;
 }
 
@@ -1020,7 +1012,7 @@ static bool deserialize_all(const char *fname)
 				break;
 
 		/* メッセージを読み込む */
-		if (!deserialize_command(rf))
+		if (!deserialize_message(rf))
 			break;
 
 		/* 直前の継続メッセージを読み込む */
@@ -1097,15 +1089,6 @@ static bool deserialize_message(struct rfile *rf)
 {
 	if (gets_rfile(rf, tmp_str, sizeof(tmp_str)) == NULL)
 		return false;
-
-	if (!conf_msgbox_tategaki) {
-		set_pen_position(conf_msgbox_margin_left, conf_msgbox_margin_top);
-	} else {
-		int msgbox_x, msgbox_y, msgbox_w, msgbox_h;
-		get_msgbox_rect(&msgbox_x, &msgbox_y, &msgbox_w, &msgbox_h);
-		set_pen_position(msgbox_w - conf_msgbox_margin_right - conf_font_size,
-				 conf_msgbox_margin_top);
-	}
 
 	return true;
 }
