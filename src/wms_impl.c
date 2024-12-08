@@ -16,10 +16,10 @@
  */
 
 static bool is_stage_pushed;
-static char *saved_layer_file_name[LAYER_EFFECT4 + 1];
-static int saved_layer_x[LAYER_EFFECT4 + 1];
-static int saved_layer_y[LAYER_EFFECT4 + 1];
-static int saved_layer_alpha[LAYER_EFFECT4 + 1];
+static char *saved_layer_file_name[STAGE_LAYERS];
+static int saved_layer_x[STAGE_LAYERS];
+static int saved_layer_y[STAGE_LAYERS];
+static int saved_layer_alpha[STAGE_LAYERS];
 
 /*
  * FFI function declaration
@@ -621,7 +621,7 @@ bool s2_push_stage(struct wms_runtime *rt)
 
 	is_stage_pushed = true;
 
-	for (i = LAYER_BG; i <= LAYER_EFFECT4; i++) {
+	for (i = LAYER_BG; i <= LAYER_TEXT8; i++) {
 		/* Exclude the following layers. */
 		switch (i) {
 		case LAYER_MSG:		/* fall-thru */
@@ -670,7 +670,7 @@ bool s2_pop_stage(struct wms_runtime *rt)
 		return true;
 	is_stage_pushed = false;
 
-	for (i = LAYER_BG; i <= LAYER_EFFECT4; i++) {
+	for (i = LAYER_BG; i <= LAYER_TEXT8; i++) {
 		/* Exclude the following layers. */
 		switch (i) {
 		case LAYER_MSG:		/* fall-thru */

@@ -677,6 +677,15 @@ static bool serialize_stage(struct wfile *wf)
 		}
 	}
 
+	if (!conf_msgbox_tategaki) {
+		set_pen_position(conf_msgbox_margin_left, conf_msgbox_margin_top);
+	} else {
+		int msgbox_x, msgbox_y, msgbox_w, msgbox_h;
+		get_msgbox_rect(&msgbox_x, &msgbox_y, &msgbox_w, &msgbox_h);
+		set_pen_position(msgbox_w - conf_msgbox_margin_right - conf_font_size,
+				 conf_msgbox_margin_top);
+	}
+
 	return true;
 }
 
@@ -1010,8 +1019,8 @@ static bool deserialize_all(const char *fname)
 			if (!set_chapter_name(tmp_str))
 				break;
 
-		/* メッセージを読み込む(無視) */
-		if (gets_rfile(rf, tmp_str, sizeof(tmp_str)) == NULL)
+		/* メッセージを読み込む */
+		if (!deserialize_command(rf))
 			break;
 
 		/* 直前の継続メッセージを読み込む */
@@ -1081,6 +1090,24 @@ static bool deserialize_all(const char *fname)
 	close_rfile(rf);
 
 	return success;
+}
+
+/* メッセージのデシリアライズを行う */
+static bool deserialize_message(struct rfile *rf)
+{
+	if (gets_rfile(rf, tmp_str, sizeof(tmp_str)) == NULL)
+		return false;
+
+	if (!conf_msgbox_tategaki) {
+		set_pen_position(conf_msgbox_margin_left, conf_msgbox_margin_top);
+	} else {
+		int msgbox_x, msgbox_y, msgbox_w, msgbox_h;
+		get_msgbox_rect(&msgbox_x, &msgbox_y, &msgbox_w, &msgbox_h);
+		set_pen_position(msgbox_w - conf_msgbox_margin_right - conf_font_size,
+				 conf_msgbox_margin_top);
+	}
+
+	return true;
 }
 
 /* コマンド位置のデシリアライズを行う */

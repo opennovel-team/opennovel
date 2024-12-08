@@ -1,20 +1,30 @@
 <html><head></head><body><ul><!-- -*- mode: html-mode; -*- -->
 
 <!-- BEGIN-LATEST-EN -->
+<li>OpenNovel 1.2.17 2024/12/08
+  <ul>
+    <li>Fixed several bugs</li>
+  </ul>
+</li>
+<!-- END-LATEST-EN -->
+<!-- BEGIN-LATEST-JP -->
+<li>OpenNovel 1.2.17 2024/12/08
+  <ul>
+    <li>バグ修正</li>
+  </ul>
+</li>
+<!-- END-LATEST-JP -->
+
 <li>OpenNovel 1.2.16 2024/12/02
   <ul>
     <li>Fixed a bug where extended-if inside extended-if causes error</li>
   </ul>
 </li>
-<!-- END-LATEST-EN -->
-<!-- BEGIN-LATEST-JP -->
 <li>OpenNovel 1.2.16 2024/12/02
   <ul>
     <li>拡張if文の入れ子によるエラーを修正</li>
   </ul>
 </li>
-<!-- END-LATEST-JP -->
-
 <li>OpenNovel 1.2.15 2024/11/25
   <ul>
     <li>Fixed a bug where "else {" shows a message</li>
