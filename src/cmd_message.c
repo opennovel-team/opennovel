@@ -407,7 +407,9 @@ static bool blit_process(void)
 	/* dimmingを行う場合 */
 	if (need_dimming) {
 		blit_dimming();
-		stop_command_repetition();
+		/* オート/スキップモードでなければ */
+		if (is_in_command_repetition())
+			stop_command_repetition();
 		return true;
 	}
 
@@ -2641,7 +2643,7 @@ static void cleanup_lip_sync(void)
 static void stop(void)
 {
 	if (need_sysmenu_mode || need_save_mode || need_load_mode || need_history_mode || need_config_mode) {
-		/* スキップモードでなければ */
+		/* オート/スキップモードでなければ */
 		if (is_in_command_repetition())
 			stop_command_repetition();
 		return;
@@ -2650,7 +2652,7 @@ static void stop(void)
 	if (conf_msgbox_dim && !avoid_dimming) {
 		need_dimming = true;
 	} else {
-		/* スキップモードでなければ */
+		/* オート/スキップモードでなければ */
 		if (is_in_command_repetition())
 			stop_command_repetition();
 	}
