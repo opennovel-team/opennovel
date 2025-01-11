@@ -222,4 +222,18 @@ bool clip_by_source(int src_cx, int src_cy, int *cx, int *cy, int *dst_x,
 bool clip_by_dest(int dst_cx, int dst_cy, int *cx, int *cy, int *dst_x,
 		  int *dst_y, int *src_x, int *src_y);
 
+/*
+ * Helpers for SSE dispatch.
+ */
+
+bool check_draw_image(struct image *dst_image,
+		      int *dst_left,
+		      int *dst_top,
+		      struct image *src_image,
+		      int *width,
+		      int *height,
+		      int *src_left,
+		      int *src_top,
+		      int alpha);
+
 #endif /* OPENNOVEL_IMAGE_H */

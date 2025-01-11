@@ -23,13 +23,19 @@
  */
 static int id_top;
 
+#if defined(USE_SSE_DISPATCH)
+extern bool is_avx2_available;
+extern bool is_avx_available;
+extern bool is_sse42_available;
+extern bool is_sse4_available;
+extern bool is_sse3_available;
+extern bool is_sse2_available;
+extern bool is_sse_available;
+#endif
+
 /*
  * 前方参照
  */
-
-static bool check_draw_image(struct image *dst_image, int *dst_left, int *dst_top,
-			     struct image *src_image, int *width, int *height,
-			     int *src_left, int *src_top, int alpha);
 
 #if defined(OPENNOVEL_TARGET_WIN32)
 static void *wrap_aligned_malloc(size_t size, size_t align);
@@ -294,6 +300,7 @@ void draw_image_copy(struct image *dst_image,
  * イメージを描画する
  *  - アルファ値は0xff固定
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_fast(struct image *dst_image,
 		     int dst_left,
 		     int dst_top,
@@ -353,11 +360,50 @@ void draw_image_fast(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_fast(struct image *dst_image,
+		     int dst_left,
+		     int dst_top,
+		     struct image *src_image,
+		     int width,
+		     int height,
+		     int src_left,
+		     int src_top,
+		     int alpha)
+{
+	void draw_image_fast_avx2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_avx(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_sse42(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_sse4(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_sse3(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_sse2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_sse(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_fast_scalar(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+
+	if (is_avx2_available)
+		draw_image_fast_avx2(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_avx_available)
+		draw_image_fast_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse42_available)
+		draw_image_fast_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse4_available)
+		draw_image_fast_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse3_available)
+		draw_image_fast_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse2_available)
+		draw_image_fast_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse_available)
+		draw_image_fast_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else
+		draw_image_fast_scalar(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+}
+#endif
 
 /*
  * イメージを描画する
  *  - アルファ値が絵文字用
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_emoji(struct image *dst_image,
 		      int dst_left,
 		      int dst_top,
@@ -420,10 +466,49 @@ void draw_image_emoji(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_emoji(struct image *dst_image,
+		      int dst_left,
+		      int dst_top,
+		      struct image *src_image,
+		      int width,
+		      int height,
+		      int src_left,
+		      int src_top,
+		      int alpha)
+{
+	void draw_image_emoji_avx2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_avx(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_sse42(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_sse4(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_sse3(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_sse2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_sse(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_emoji_scalar(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+
+	if (is_avx2_available)
+		draw_image_emoji_avx2(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_avx_available)
+		draw_image_emoji_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse42_available)
+		draw_image_emoji_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse4_available)
+		draw_image_emoji_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse3_available)
+		draw_image_emoji_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse2_available)
+		draw_image_emoji_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse_available)
+		draw_image_emoji_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else
+		draw_image_emoji_scalar(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+}
+#endif
 
 /*
  * イメージを描画する
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_add(struct image *dst_image,
 		    int dst_left,
 		    int dst_top,
@@ -495,10 +580,50 @@ void draw_image_add(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_add(struct image *dst_image,
+		    int dst_left,
+		    int dst_top,
+		    struct image *src_image,
+		    int width,
+		    int height,
+		    int src_left,
+		    int src_top,
+		    int alpha)
+{
+	void draw_image_add_avx2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_avx(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_sse42(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_sse4(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_sse3(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_sse2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_sse(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_add_scalar(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+
+	if (is_avx2_available)
+		draw_image_add_avx2(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_avx_available)
+		draw_image_add_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse42_available)
+		draw_image_add_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse4_available)
+		draw_image_add_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse3_available)
+		draw_image_add_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse2_available)
+		draw_image_add_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse_available)
+		draw_image_add_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else
+		draw_image_add_scalar(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+}
+#endif
+
 
 /*
  * イメージを描画する
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_dim(struct image *dst_image,
 		    int dst_left,
 		    int dst_top,
@@ -557,10 +682,49 @@ void draw_image_dim(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_dim(struct image *dst_image,
+		    int dst_left,
+		    int dst_top,
+		    struct image *src_image,
+		    int width,
+		    int height,
+		    int src_left,
+		    int src_top,
+		    int alpha)
+{
+	void draw_image_dim_avx2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_avx(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_sse42(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_sse4(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_sse3(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_sse2(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_sse(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+	void draw_image_dim_scalar(struct image *, int dst_left, int, struct image *, int, int, int, int, int);
+
+	if (is_avx2_available)
+		draw_image_dim_avx2(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_avx_available)
+		draw_image_dim_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse42_available)
+		draw_image_dim_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse4_available)
+		draw_image_dim_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse3_available)
+		draw_image_dim_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse2_available)
+		draw_image_dim_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else if (is_sse_available)
+		draw_image_dim_avx(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+	else
+		draw_image_dim_scalar(dst_image, dst_left, dst_top, src_image, width, height, src_left, src_top, alpha);
+}
+#endif
 
 /*
  * イメージをルール付きで描画する
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_rule(struct image *dst_image,
 		     struct image *src_image,
 		     struct image *rule_image,
@@ -612,10 +776,44 @@ void draw_image_rule(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_rule(struct image *dst_image,
+		     struct image *src_image,
+		     struct image *rule_image,
+		     int threshold)
+{
+	void draw_image_rule_avx2(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_avx(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_sse42(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_sse4(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_sse3(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_sse2(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_sse(struct image *, struct image *, struct image *, int);
+	void draw_image_rule_scalar(struct image *, struct image *, struct image *, int);
+
+	if (is_avx2_available)
+		draw_image_rule_avx2(dst_image, src_image, rule_image, threshold);
+	else if (is_avx_available)
+		draw_image_rule_avx(dst_image, src_image, rule_image, threshold);
+	else if (is_sse42_available)
+		draw_image_rule_sse42(dst_image, src_image, rule_image, threshold);
+	else if (is_sse4_available)
+		draw_image_rule_sse4(dst_image, src_image, rule_image, threshold);
+	else if (is_sse3_available)
+		draw_image_rule_sse3(dst_image, src_image, rule_image, threshold);
+	else if (is_sse2_available)
+		draw_image_rule_sse2(dst_image, src_image, rule_image, threshold);
+	else if (is_sse_available)
+		draw_image_rule_sse(dst_image, src_image, rule_image, threshold);
+	else
+		draw_image_rule_scalar(dst_image, src_image, rule_image, threshold);
+}
+#endif
 
 /*
  * イメージをルール付き(メルト)で描画する
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_melt(struct image *dst_image,
 		     struct image *src_image,
 		     struct image *rule_image,
@@ -699,10 +897,44 @@ void draw_image_melt(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_melt(struct image *dst_image,
+		     struct image *src_image,
+		     struct image *rule_image,
+		     int threshold)
+{
+	void draw_image_melt_avx2(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_avx(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_sse42(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_sse4(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_sse3(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_sse2(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_sse(struct image *, struct image *, struct image *, int);
+	void draw_image_melt_scalar(struct image *, struct image *, struct image *, int);
+
+	if (is_avx2_available)
+		draw_image_melt_avx2(dst_image, src_image, rule_image, threshold);
+	else if (is_avx_available)
+		draw_image_melt_avx(dst_image, src_image, rule_image, threshold);
+	else if (is_sse42_available)
+		draw_image_melt_sse42(dst_image, src_image, rule_image, threshold);
+	else if (is_sse4_available)
+		draw_image_melt_sse4(dst_image, src_image, rule_image, threshold);
+	else if (is_sse3_available)
+		draw_image_melt_sse3(dst_image, src_image, rule_image, threshold);
+	else if (is_sse2_available)
+		draw_image_melt_sse2(dst_image, src_image, rule_image, threshold);
+	else if (is_sse_available)
+		draw_image_melt_sse(dst_image, src_image, rule_image, threshold);
+	else
+		draw_image_melt_scalar(dst_image, src_image, rule_image, threshold);
+}
+#endif
 
 /*
  * イメージをスケールして描画する (nearest-neighbor)
  */
+#if !defined(USE_SSE_DISPATCH)
 void draw_image_scale(struct image *dst_image,
 		      int virtual_dst_width,
 		      int virtual_dst_height,
@@ -806,21 +1038,57 @@ void draw_image_scale(struct image *dst_image,
 
 	notify_image_update(dst_image);
 }
+#else
+void draw_image_scale(struct image *dst_image,
+		      int virtual_dst_width,
+		      int virtual_dst_height,
+		      int virtual_dst_left,
+		      int virtual_dst_top,
+		      struct image *src_image)
+{
+	void draw_image_scale_avx2(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_avx(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_sse42(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_sse4(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_sse3(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_sse2(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_sse(struct image *, int, int, int, int, struct image *);
+	void draw_image_scale_scalar(struct image *, int, int, int, int, struct image *);
+
+	if (is_avx2_available)
+		draw_image_scale_avx2(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else if (is_avx_available)
+		draw_image_scale_avx(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else if (is_sse42_available)
+		draw_image_scale_sse42(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else if (is_sse4_available)
+		draw_image_scale_sse4(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else if (is_sse3_available)
+		draw_image_scale_sse3(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else if (is_sse2_available)
+		draw_image_scale_sse2(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else if (is_sse_available)
+		draw_image_scale_sse(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+	else
+		draw_image_scale_scalar(dst_image, virtual_dst_width, virtual_dst_height, virtual_dst_left, virtual_dst_top, src_image);
+		
+}
+#endif
 
 /*
  * Clipping
  */
 
 /* Check for draw_image_*() parameters. */
-static bool check_draw_image(struct image *dst_image,
-			     int *dst_left,
-			     int *dst_top,
-			     struct image *src_image,
-			     int *width,
-			     int *height,
-			     int *src_left,
-			     int *src_top,
-			     int alpha)
+bool check_draw_image(struct image *dst_image,
+		      int *dst_left,
+		      int *dst_top,
+		      struct image *src_image,
+		      int *width,
+		      int *height,
+		      int *src_left,
+		      int *src_top,
+		      int alpha)
 {
 	/* 引数をチェックする */
 	assert(dst_image != NULL);

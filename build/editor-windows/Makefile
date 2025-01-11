@@ -18,7 +18,6 @@ CFLAGS = \
 	-fno-stack-protector \
 	-fomit-frame-pointer \
 	-municode \
-	-msse3 \
 	-ffast-math \
 	-ftree-vectorize \
 	-finput-charset=utf-8 \
@@ -117,6 +116,15 @@ OBJS = \
 	objs/stage.o \
 	objs/vars.o \
 	objs/wave.o \
+	objs/avx2.o \
+	objs/avx.o \
+	objs/sse42.o \
+	objs/sse4.o \
+	objs/sse3.o \
+	objs/sse2.o \
+	objs/sse.o \
+	objs/scalar.o \
+	objs/cpuid.o \
 	objs/wms_core.o \
 	objs/wms_impl.o \
 	objs/wms_lexer.yy.o \
@@ -275,6 +283,42 @@ objs/vars.o: ../../src/vars.c
 	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
 objs/wave.o: ../../src/wave.c libroot
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
+
+objs/avx2.o: ../../src/sse/avx2.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -mavx2 $<
+
+objs/avx.o: ../../src/sse/avx.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -mavx $<
+
+objs/sse42.o: ../../src/sse/sse42.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -msse4.2 $<
+
+objs/sse4.o: ../../src/sse/sse4.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -msse4 $<
+
+objs/sse3.o: ../../src/sse/sse3.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -msse3 $<
+
+objs/sse2.o: ../../src/sse/sse2.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -msse2 $<
+
+objs/sse.o: ../../src/sse/sse.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) -msse $<
+
+objs/scalar.o: ../../src/sse/scalar.c
+	mkdir -p objs
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
+
+objs/cpuid.o: ../../src/sse/cpuid.c
 	mkdir -p objs
 	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
