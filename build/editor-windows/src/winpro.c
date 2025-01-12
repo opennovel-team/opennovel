@@ -414,6 +414,11 @@ static int get_locale_id(void);
 static const char *get_ui_message(int id);
 
 /*
+ * cpuid.c
+ */
+void check_cpuid(void);
+
+/*
  * Initialization
  */
 
@@ -477,6 +482,9 @@ static BOOL InitApp(HINSTANCE hInstance, int nCmdShow)
 	conf_game_width = 1280;
 	conf_game_height = 720;
 	conf_game_title = strdup("OpenNovel");
+
+	/* Check for SSE instructions. */
+	check_cpuid();
 
 	/* Initialize the window. */
 	if (!InitWindow(hInstance, nCmdShow))
