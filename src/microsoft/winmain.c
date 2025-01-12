@@ -162,6 +162,11 @@ static int get_locale_id(void);
 static const char *get_ui_message(int id);
 
 /*
+ * cpuid.c
+ */
+void check_cpuid(void);
+
+/*
  * WinMain
  */
 int WINAPI wWinMain(
@@ -231,6 +236,10 @@ static BOOL InitApp(HINSTANCE hInstance, int nCmdShow)
 	if (FAILED(hResult))
 		return FALSE;
 
+	/* SSE命令の有無をチェックする */
+	check_cpuid();
+
+	/* ファイルをチェックする */
 	if (!FILE_EXISTS(CONFIG_FILE) && !FILE_EXISTS(PACKAGE_FILE))
 	{
 		log_error(get_ui_message(UIMSG_NO_GAME_FILES));
