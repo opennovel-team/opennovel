@@ -1,20 +1,30 @@
 <html><head></head><body><ul><!-- -*- mode: html-mode; -*- -->
 
 <!-- BEGIN-LATEST-EN -->
+<li>OpenNovel 1.2.21 2025/01/12
+  <ul>
+    <li>Fixed to use SSE if available</li>
+  </ul>
+</li>
+<!-- END-LATEST-EN -->
+<!-- BEGIN-LATEST-JP -->
+<li>OpenNovel 1.2.21 2025/01/12
+  <ul>
+    <li>利用可能なときSSEを利用するように修正</li>
+  </ul>
+</li>
+<!-- END-LATEST-JP -->
+
 <li>OpenNovel 1.2.20 2025/01/11
   <ul>
     <li>Changed to use SSE only if it's available</li>
   </ul>
 </li>
-<!-- END-LATEST-EN -->
-<!-- BEGIN-LATEST-JP -->
 <li>OpenNovel 1.2.20 2025/01/11
   <ul>
     <li>利用可能なときのみSSEを利用するように変更</li>
   </ul>
 </li>
-<!-- END-LATEST-JP -->
-
 <li>OpenNovel 1.2.19 2024/12/08
   <ul>
     <li>Fixed the GUI gosub specification</li>
