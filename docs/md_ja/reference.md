@@ -1151,10 +1151,10 @@ GUIファイルの書き方は [GUI](gui.html) をご覧ください。
 
 ### 使い方1
 
-GUIファイル `menu.txt` を読み込んでメニューを実行します。
+GUIファイル `sysmenu.txt` を読み込んでメニューを実行します。
 
 ```
-@gui menu.txt
+@gui sysmenu.txt
 ```
 
 ### 使い方2
